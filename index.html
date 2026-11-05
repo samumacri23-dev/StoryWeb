@@ -1,0 +1,1693 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Storyweb - Enciclopedia della Memoria Storica e Scolastica</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Lato, Helvetica, Arial, sans-serif;
+            background-color: #f6f6f6;
+            color: #202122;
+            line-height: 1.6;
+        }
+
+        header {
+            background-color: #ffffff;
+            border-bottom: 1px solid #a2a9b1;
+            padding: 12px 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .logo {
+            font-size: 26px;
+            font-weight: bold;
+            font-family: 'Georgia', serif;
+            color: #000;
+        }
+        .logo span { color: #36c; }
+        
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        .search-bar {
+            display: flex;
+            gap: 5px;
+        }
+        .search-bar input {
+            padding: 8px 12px;
+            width: 280px;
+            border: 1px solid #a2a9b1;
+            border-radius: 2px;
+            font-size: 14px;
+        }
+        .btn-search {
+            padding: 8px 12px;
+            background-color: #36c;
+            color: white;
+            border: none;
+            border-radius: 2px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        .btn-mode {
+            padding: 8px 12px;
+            background-color: #72777d;
+            color: white;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 13px;
+        }
+        .btn-mode.active { background-color: #d33; }
+        .btn-quiz-mode { background-color: #28a745; }
+        .btn-quiz-mode.active { background-color: #1e7e34; }
+        
+        .admin-banner {
+            display: none;
+            background-color: #d33;
+            color: white;
+            text-align: center;
+            padding: 8px;
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        .container {
+            display: flex;
+            max-width: 1450px;
+            margin: 20px auto;
+            background-color: #ffffff;
+            border: 1px solid #a2a9b1;
+        }
+
+        aside {
+            width: 280px;
+            background-color: #f8f9fa;
+            border-right: 1px solid #a2a9b1;
+            padding: 20px 15px;
+            flex-shrink: 0;
+            max-height: 90vh;
+            overflow-y: auto;
+            position: sticky;
+            top: 60px;
+        }
+        aside h3 {
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #54595d;
+            border-bottom: 1px solid #aaa;
+            margin-bottom: 10px;
+            padding-bottom: 3px;
+            margin-top: 15px;
+        }
+        aside h3:first-child { margin-top: 0; }
+        aside ul { list-style: none; margin-bottom: 15px; }
+        aside li { margin-bottom: 6px; }
+        aside a { color: #36c; text-decoration: none; font-size: 13px; }
+        aside a:hover { text-decoration: underline; }
+
+        main { flex: 1; padding: 35px; max-width: 1100px; }
+        h1 {
+            font-family: 'Georgia', serif;
+            font-weight: normal;
+            font-size: 30px;
+            border-bottom: 1px solid #a2a9b1;
+            padding-bottom: 8px;
+            margin-bottom: 20px;
+        }
+        
+        .wiki-article {
+            margin-bottom: 65px;
+            padding-bottom: 40px;
+            border-bottom: 1px solid #eaecf0;
+            position: relative;
+        }
+        h2 {
+            font-family: 'Georgia', serif;
+            font-weight: normal;
+            font-size: 25px;
+            border-bottom: 1px solid #a2a9b1;
+            padding-bottom: 4px;
+            margin-top: 15px;
+            margin-bottom: 15px;
+        }
+        h3.section-title {
+            font-size: 18px;
+            margin-top: 22px;
+            margin-bottom: 10px;
+            color: #202122;
+            border-bottom: 1px dotted #ccc;
+            padding-bottom: 3px;
+            font-family: 'Georgia', serif;
+        }
+        p { margin-bottom: 14px; font-size: 14.5px; text-align: justify; }
+
+        .infobox {
+            float: right;
+            width: 320px;
+            border: 1px solid #a2a9b1;
+            background-color: #f8f9fa;
+            padding: 8px;
+            margin: 0 0 15px 20px;
+            font-size: 13px;
+        }
+        .infobox-title {
+            background-color: #ced3d9;
+            text-align: center;
+            font-weight: bold;
+            padding: 6px;
+            font-size: 15px;
+            margin-bottom: 8px;
+        }
+        .infobox img {
+            width: 100%;
+            height: auto;
+            max-height: 280px;
+            object-fit: cover;
+            border: 1px solid #ccc;
+            margin-bottom: 8px;
+            display: block;
+        }
+        .infobox table { width: 100%; border-collapse: collapse; }
+        .infobox th {
+            text-align: left;
+            vertical-align: top;
+            width: 40%;
+            padding: 5px;
+            border-top: 1px solid #00000010;
+        }
+        .infobox td { padding: 5px; border-top: 1px solid #00000010; }
+
+        .catalogo-box {
+            background-color: #f8f9fa;
+            border: 1px solid #a2a9b1;
+            border-left: 4px solid #36c;
+            padding: 15px 20px;
+            margin: 20px 0;
+            font-size: 13.5px;
+        }
+        .catalogo-box ul { margin-left: 20px; margin-top: 5px; }
+        .catalogo-box li { margin-bottom: 6px; }
+
+        /* Quiz / Interrogazione Mode */
+        .quiz-container {
+            display: none;
+            background-color: #f0f8ff;
+            border: 2px solid #36c;
+            padding: 25px;
+            margin-bottom: 30px;
+            border-radius: 6px;
+        }
+        .quiz-container h3 { color: #36c; margin-bottom: 12px; font-family: 'Georgia', serif; }
+        .quiz-options { margin: 15px 0; }
+        .quiz-btn {
+            display: block;
+            width: 100%;
+            padding: 10px 15px;
+            margin-bottom: 8px;
+            background-color: #fff;
+            border: 1px solid #a2a9b1;
+            border-radius: 4px;
+            text-align: left;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        .quiz-btn:hover { background-color: #e2e8f0; }
+        .quiz-feedback { font-weight: bold; margin-top: 10px; font-size: 14px; }
+        body.quiz-active .wiki-article, body.quiz-active .add-box-section { display: none; }
+        body.quiz-active .quiz-container { display: block; }
+
+        .presentation-card {
+            display: none;
+            background-color: #fff9e6;
+            border: 2px solid #f0c040;
+            padding: 18px;
+            margin-bottom: 20px;
+            border-radius: 4px;
+        }
+        .presentation-card h4 { font-size: 16px; color: #b8860b; margin-bottom: 8px; font-family: 'Georgia', serif; }
+        .keywords-tag {
+            display: inline-block;
+            background-color: #f0c040;
+            color: #000;
+            padding: 3px 9px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: bold;
+            margin-right: 6px;
+            margin-bottom: 6px;
+        }
+        body.presentation-mode .wiki-article p,
+        body.presentation-mode .wiki-article .catalogo-box { display: none; }
+        body.presentation-mode .presentation-card { display: block; }
+
+        .admin-controls {
+            display: none;
+            margin-top: 15px;
+            padding: 12px;
+            background-color: #ffe6e6;
+            border: 1px dashed #d33;
+            border-radius: 4px;
+        }
+        body.admin-active .admin-controls { display: block; }
+        .btn-admin-del {
+            background-color: #d33;
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: bold;
+            border-radius: 2px;
+            margin-right: 8px;
+        }
+        .btn-admin-edit {
+            background-color: #28a745;
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: bold;
+            border-radius: 2px;
+        }
+
+        .add-box-section {
+            background-color: #f8f9fa;
+            border: 1px solid #a2a9b1;
+            padding: 22px;
+            margin-bottom: 35px;
+            border-radius: 4px;
+        }
+        .form-group { margin-bottom: 12px; }
+        .form-group label { display: block; font-size: 13px; font-weight: bold; margin-bottom: 4px; }
+        .form-group input, .form-group textarea {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #a2a9b1;
+            border-radius: 2px;
+            font-size: 14px;
+        }
+        .form-group textarea { height: 130px; resize: vertical; }
+        .btn-submit {
+            background-color: #36c;
+            color: white;
+            border: none;
+            padding: 10px 18px;
+            font-size: 14px;
+            cursor: pointer;
+            border-radius: 2px;
+            font-weight: bold;
+        }
+        .btn-submit:hover { background-color: #447ff5; }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="logo">Story<span>web</span></div>
+        <div class="header-actions">
+            <button class="btn-mode btn-quiz-mode" id="btnQuizMode" onclick="toggleQuizMode()">🎓 INTERROGAZIONE MODE</button>
+            <button class="btn-mode" id="btnPresMode" onclick="togglePresentationMode()">📊 PRESENTAZIONI MODE</button>
+            <div class="search-bar">
+                <input type="text" id="searchInput" onkeydown="handleSearchKey(event)" onkeyup="searchWiki()" placeholder="Cerca su Storyweb...">
+                <button class="btn-search" onclick="triggerSearch()">Cerca</button>
+            </div>
+        </div>
+    </header>
+
+    <div class="admin-banner" id="adminBanner">⚙️ MODALITÀ AMMINISTRATORE ATTIVATA (Pannello di Gestione Sbloccato)</div>
+
+    <div class="container">
+        <aside>
+            <h3>Navigazione</h3>
+            <ul>
+                <li><a href="#">Pagina principale</a></li>
+                <li><a href="#add-box">➕ ADD BOX (Nuova Voce)</a></li>
+            </ul>
+
+            <h3>📚 Materie Scolastiche</h3>
+            <ul>
+                <li><a href="#scienze-vista">Scienze: La Vista e l'Occhio</a></li>
+                <li><a href="#scienze-neuroni">Scienze: I Neuroni</a></li>
+                <li><a href="#scienze-sistema-nervoso">Scienze: Sistema Nervoso Centrale</a></li>
+                <li><a href="#scienze-endocrino">Scienze: Sistema Endocrino</a></li>
+                <li><a href="#arte-neoclassicismo">Arte: Neoclassicismo e Pittori</a></li>
+                <li><a href="#arte-romanticismo">Arte: Romanticismo e Pittori</a></li>
+                <li><a href="#letteratura-foscolo">Letteratura: Ugo Foscolo</a></li>
+                <li><a href="#letteratura-neoclassicismo">Letteratura: Neoclassicismo e Romanticismo</a></li>
+                <li><a href="#matematica-terza-media">Aritmetica e Geometria (3ª Media)</a></li>
+            </ul>
+
+            <h3>🏛️ Risorgimento e Personaggi</h3>
+            <ul>
+                <li><a href="#garibaldi">Giuseppe Garibaldi</a></li>
+                <li><a href="#mazzini">Giuseppe Mazzini</a></li>
+                <li><a href="#vittorio-emanuele">Vittorio Emanuele II</a></li>
+                <li><a href="#foscolo">Ugo Foscolo (Vita e Opere)</a></li>
+                <li><a href="#cavour">Camillo Benso di Cavour</a></li>
+                <li><a href="#napoleone">Napoleone Bonaparte</a></li>
+                <li><a href="#cesare">Giulio Cesare</a></li>
+            </ul>
+
+            <h3>⚡ Altri Eventi & Scienziati</h3>
+            <ul id="sidebarList">
+                <li><a href="#11settembre">Attentati 11 Settembre 2001</a></li>
+                <li><a href="#einstein">Albert Einstein</a></li>
+                <li><a href="#dante">Dante Alighieri</a></li>
+                <li><a href="#marie-curie">Marie Curie</a></li>
+                <li><a href="#alexander-great">Alessandro Magno</a></li>
+                <li><a href="#da-vinci">Leonardo da Vinci</a></li>
+                <li><a href="#cleopatra">Cleopatra VII</a></li>
+                <li><a href="#tesla">Nikola Tesla</a></li>
+                <li><a href="#rosa-parks">Rosa Parks</a></li>
+                <li><a href="#martin-luther-king">Martin Luther King Jr.</a></li>
+                <li><a href="#justin-lee-turner">Justin Lee Turner</a></li>
+                <li><a href="#lam">Elisa Lam</a></li>
+                <li><a href="#jackson">Michael Jackson</a></li>
+            </ul>
+
+            <h3>Voci Utenti Server</h3>
+            <ul id="userCreatedSidebar"></ul>
+        </aside>
+
+        <main>
+            <h1>Storyweb: Enciclopedia Storica e Scolastica</h1>
+            <p>Benvenuto su <strong>Storyweb</strong>. Di seguito sono riportate le schede enciclopediche complete e approfondite per ogni voce, suddivise in sezioni dettagliate per la consultazione e lo studio.</p>
+
+            <!-- INTERROGAZIONE MODE (QUIZ) -->
+            <section class="quiz-container" id="quizSection">
+                <h3>🎓 Interrogazione Mode - Mettiti alla prova!</h3>
+                <p id="quizQuestion">Premi il pulsante qui sotto per avviare l'interrogazione casuale su Storia, Scienze, Arte o Letteratura.</p>
+                <div class="quiz-options" id="quizOptions"></div>
+                <div class="quiz-feedback" id="quizFeedback"></div>
+                <button class="btn-submit" onclick="nextQuizQuestion()" style="margin-top: 15px;">Prossima Domanda ➡️</button>
+            </section>
+
+            <!-- FORM ADD BOX -->
+            <section id="add-box" class="add-box-section">
+                <h2>➕ ADD BOX: Aggiungi una nuova Voce Globale</h2>
+                <form id="addPersonForm" onsubmit="saveCharacterToServer(event)">
+                    <div class="form-group">
+                        <label for="nome">Nome del Personaggio / Argomento:</label>
+                        <input type="text" id="nome" required placeholder="Es. Alessandro Manzoni">
+                    </div>
+                    <div class="form-group">
+                        <label for="imgUrl">URL Immagine (Wikimedia / Web):</label>
+                        <input type="url" id="imgUrl" placeholder="https://upload.wikimedia.org/.../foto.jpg">
+                    </div>
+                    <div class="form-group">
+                        <label for="nascita">Data / Periodo di inizio:</label>
+                        <input type="text" id="nascita" placeholder="Es. 7 marzo 1785, Milano">
+                    </div>
+                    <div class="form-group">
+                        <label for="morte">Data / Periodo di fine:</label>
+                        <input type="text" id="morte" placeholder="Es. 22 maggio 1873, Milano">
+                    </div>
+                    <div class="form-group">
+                        <label for="ruolo">Materia / Ruolo:</label>
+                        <input type="text" id="ruolo" placeholder="Es. Letteratura / Scrittore e Poeta">
+                    </div>
+                    <div class="form-group">
+                        <label for="keywords">Parole Chiave per Presentazioni (separate da virgola):</label>
+                        <input type="text" id="keywords" placeholder="Es. Promessi Sposi, Romanticismo, Romanzo Storico">
+                    </div>
+                    <div class="form-group">
+                        <label for="biografia">Trattazione Dettagliata (Stile Wikipedia):</label>
+                        <textarea id="biografia" required placeholder="Inserisci ogni singolo dettaglio su vita, lavoro, scoperte o argomenti trattati..."></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="catalogo">Catalogo / Argomenti chiave (separati da virgola):</label>
+                        <input type="text" id="catalogo" placeholder="Es. 1827 Prima edizione Promessi Sposi, 1840 Edizione definitiva">
+                    </div>
+                    <button type="submit" class="btn-submit">Pubblica sul Server Globale</button>
+                </form>
+            </section>
+
+            <div id="serverArticlesContainer"></div>
+
+            <div id="articlesContainer">
+
+                <!-- 📚 MATERIE SCOLASTICHE -->
+
+                <!-- SCIENZE: LA VISTA -->
+                <article class="wiki-article" id="scienze-vista">
+                    <h2>Scienze: La Vista e l'Anatomia dell'Occhio</h2>
+                    <div class="infobox">
+                        <div class="infobox-title">La Vista Umana</div>
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/1e/Schematic_diagram_of_the_human_eye_it.svg/400px-Schematic_diagram_of_the_human_eye_it.svg.png" alt="Anatomia Occhio">
+                        <table>
+                            <tr><th>Materia:</th><td>Scienze Naturali e Biologia</td></tr>
+                            <tr><th>Organo:</th><td>L'Occhio Umano (Bulbo Oculare)</td></tr>
+                            <tr><th>Funzione:</th><td>Fotorecezione e Percezione Visiva</td></tr>
+                        </table>
+                    </div>
+
+                    <div class="presentation-card">
+                        <h4>📊 SCHEDA PRESENTAZIONE: La Vista</h4>
+                        <div>
+                            <span class="keywords-tag">Bulbo Oculare</span>
+                            <span class="keywords-tag">Cornea e Cristallino</span>
+                            <span class="keywords-tag">Retina e Fotorecettori</span>
+                            <span class="keywords-tag">Coni e Bastoncelli</span>
+                            <span class="keywords-tag">Nervo Ottico</span>
+                        </div>
+                        <p style="margin-top:8px; font-size:13px;"><strong>Punti Chiave:</strong> L'apparato visivo riceve i raggi luminosi, li rifrange tramite cornea e cristallino mettendo a fuoco l'immagine sulla retina, dove coni e bastoncelli convertono la luce in impulsi nervosi diretti al cervello.</p>
+                    </div>
+
+                    <h3 class="section-title">Anatomia e Fisiologia del Bulbo Oculare</h3>
+                    <p>La vista è il senso principale attraverso il quale l'essere umano acquisisce circa l'80% delle informazioni sull'ambiente circostante. L'organo recettore è l'occhio, o bulbo oculare, una struttura sferica alloggiata nella cavità orbitaria del cranio, protetta dalle palpebre, dalle ciglia, dalle sopracciglia e dal liquido lacrimale prodotto dalle ghiandole lacrimali per mantenere lubrificata la superficie anteriore.</p>
+                    <p>La parete dell'occhio è formata da tre tonache concentriche:</p>
+                    <p>1. <strong>La Tonica Esterna (Sclerotica e Cornea):</strong> La sclera è la parte bianca e resistente con funzione protettiva; nella parte anteriore diventa perfettamente trasparente prendendo il nome di <strong>cornea</strong>, la prima lente naturale che rifrange i raggi luminosi in ingresso.</p>
+                    <p>2. <strong>La Tonica Media (Uvea):</strong> Comprende la *coroide* (ricca di vasi sanguigni che nutrono l'occhio), il *corpo ciliare* ed l'<strong>iride</strong>. L'iride è l'anello muscolare colorato al cui centro si trova la <strong>pupilla</strong>, un foro che si dilata (midriasi) al buio e si restringe (miosi) in presenza di molta luce per regolare la quantità di radiazione luminosa afferente.</p>
+
+                    <h3 class="section-title">Il Meccanismo di Focalizzazione e il Cristallino</h3>
+                    <p>Subito dietro l'iride si trova il <strong>cristallino</strong>, una lente biconfessa flessibile e trasparente. Attraverso l'azione dei muscoli ciliari, il cristallino modifica la propria curvatura (processo di <em>accomodazione</em>) per consentire la messa a fuoco nitida sulla retina sia degli oggetti vicini che di quelli lontani. Con l'avanzare dell'età, la perdita di elasticità del cristallino provoca la presbiopia, mentre la sua opacizzazione determina la cataratta.</p>
+
+                    <h3 class="section-title">La Retina e i Fotorecettori: Coni e Bastoncelli</h3>
+                    <p>La <strong>retina</strong> è la membrana interna sensibile dell'occhio, formata da strati di cellule nervose tra cui i fotorecettori specializzati:</p>
+                    <p>- <strong>I Bastoncelli (circa 120 milioni):</strong> Sono distribuiti principalmente nelle zone periferiche della retina. Contengono il pigmento rodopsina, sono estremamente sensibili anche a bassissime intensità di luce e consentono la visione notturna o crepuscolare in bianco e nero, priva di dettagli fini.</p>
+                    <p>- <strong>I Coni (circa 6 milioni):</strong> Sono concentrati nella <em>fovea centralis</em> (il punto di massima acuità visiva). Funzionano solo ad elevata luminosità e contengono fotopsine sensibili a tre diverse lunghezze d'onda corrispondenti ai colori primari (rosso, verde e blu), permettendo la visione a colori e l'alta risoluzione visiva.</p>
+
+                    <h3 class="section-title">Dalla Retina al Cervello: Il Nervo Ottico</h3>
+                    <p>Quando la luce colpisce i coni ed i bastoncelli, innesca una reazione chimica che genera impulsi elettrici. Questi impulsi vengono trasmessi alle cellule bipolari e gangliari della retina, i cui assoni si uniscono per formare il <strong>nervo ottico</strong>. I nervi ottici dei due occhi si incrociano parzialmente nel chiasma ottico e raggiungono la corteccia visiva primaria nel lobo occipitale del cervello, dove le immagini proiettate sulla retina capovolte e rimpicciolite vengono rielaborate, raddrizzate e fuse in una singola percezione tridimensionale (visione stereoscopica).</p>
+
+                    <div class="catalogo-box">
+                        <strong>📑 Catalogo delle Componenti e dei Difetti Visivi:</strong>
+                        <ul>
+                            <li><strong>Cornea & Cristallino:</strong> Lenti trasparenti di rifrazione ed accomodazione.</li>
+                            <li><strong>Pupilla & Iride:</strong> Diaframma regolatore dell'intensità luminosa.</li>
+                            <li><strong>Retina:</strong> Tessuto recettore contenente Coni (colori) e Bastoncelli (luce tenue).</li>
+                            <li><strong>Miopia:</strong> Difetto per cui le immagini si focalizzano davanti alla retina (difficoltà da lontano).</li>
+                            <li><strong>Ipermetropia:</strong> Difetto per cui le immagini si focalizzano dietro la retina (difficoltà da vicino).</li>
+                            <li><strong>Astigmatismo:</strong> Deformazione della curvatura della cornea che sfuoca i contorni.</li>
+                        </ul>
+                    </div>
+
+                    <div class="admin-controls">
+                        <strong>⚙️ Opzioni Amministratore:</strong><br>
+                        <button class="btn-admin-edit" onclick="editStaticArticle('scienze-vista')">✏️ Modifica Testo</button>
+                    </div>
+                </article>
+
+                <!-- SCIENZE: I NEURONI -->
+                <article class="wiki-article" id="scienze-neuroni">
+                    <h2>Scienze: I Neuroni e la Conduzione Nervosa</h2>
+                    <div class="infobox">
+                        <div class="infobox-title">Il Neurone</div>
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/b5/Neuron_Hand-tuned.svg/400px-Neuron_Hand-tuned.svg.png" alt="Neurone">
+                        <table>
+                            <tr><th>Materia:</th><td>Biologia e Citologia Nervosa</td></tr>
+                            <tr><th>Unità:</th><td>Cellula Nervosa (Neurone)</td></tr>
+                            <tr><th>Funzione:</th><td>Generazione e trasmissione impulsi bioelettrici</td></tr>
+                        </table>
+                    </div>
+
+                    <div class="presentation-card">
+                        <h4>📊 SCHEDA PRESENTAZIONE: I Neuroni</h4>
+                        <div>
+                            <span class="keywords-tag">Soma (Corpo Cellulare)</span>
+                            <span class="keywords-tag">Dendriti</span>
+                            <span class="keywords-tag">Assone</span>
+                            <span class="keywords-tag">Guaina Mielinica e Nodi di Ranvier</span>
+                            <span class="keywords-tag">Sinapsi e Neurotrasmettitori</span>
+                        </div>
+                        <p style="margin-top:8px; font-size:13px;"><strong>Punti Chiave:</strong> Unità morfo-funzionale del sistema nervoso. Riceve stimoli mediante i dendriti, li elabora nel soma e trasmette il potenziale d'azione lungo l'assone mielinizzato fino al vallo sinaptico.</p>
+                    </div>
+
+                    <h3 class="section-title">Struttura Anatomica del Neurone</h3>
+                    <p>Il neurone è la cellula fondamentale del tessuto nervoso, altamente specializzata nel generare, condurre ed elaborare impulsi elettrici (potenziali d'azione). Nel corpo umano si stima la presenza di oltre 86 miliardi di neuroni. Nonostante la varietà di forme e dimensioni, un neurone tipo si suddivide in tre regioni anatomiche ben distinte:</p>
+                    <p>1. <strong>Il Corpo Cellulare (Soma o Pericario):</strong> Rappresenta il centro metabolico e genetico della cellula. Contiene il nucleo sferico, un sviluppato apparato di Golgi, numerosi mitocondri e i *corpi di Nissl* (agglomerati di reticolo endoplasmatico rugoso per la sintesi proteica). Dal soma dipartono tutti i prolungamenti citoplasmatici.</p>
+                    <p>2. <strong>I Dendriti:</strong> Sono prolungamenti brevi, numerosi e ramificati a forma di albero che si estendono dal soma. La loro superficie è ricoperta di *spine dendritiche* e funge da antenna recettrice per raccogliere i segnali chimici o fisici provenienti dagli assoni di altri neuroni, conducendoli in direzione centripeta verso il corpo cellulare.</p>
+                    <p>3. <strong>L'Assone (o Neurite):</strong> È un unico prolungamento cilindrico, lungo da pochi millimetri fino a oltre un metro (come i neuroni motori che vanno dal midollo spinale al piede). L'assone origina dal *cono di emergenza* del soma e conduce l'impulso nervoso in direzione centrifuga (dal corpo cellulare verso la periferia). Termina con una ramificazione finale detta *arborizzazione terminale*, che presenta rigonfiamenti chiamati *bottoni sinaptici*.</p>
+
+                    <h3 class="section-title">La Guaina Mielinica e la Conduzione Saltatoria</h3>
+                    <p>Negli assoni dei vertebrati, la velocità di trasmissione dell'impulso elettrico è aumentata dalla presenza della <strong>guaina mielinica</strong>, un rivestimento lipidico e proteico di colore biancastro formato dalle cellule di Schwann nel Sistema Nervoso Periferico e dagli oligodendrociti nel Sistema Nervoso Centrale. La guaina mielinica non è continua, ma è interrotta a intervalli regolari dai <strong>nodi di Ranvier</strong>. Poiché la mielina funge da isolante elettrico, il potenziale d'azione non scorre uniformemente lungo l'assone, ma "salta" da un nodo di Ranvier all'altro (*conduzione saltatoria*), aumentando la velocità del segnale da 1 m/s fino a oltre 120 m/s (circa 400 km/h).</p>
+
+                    <h3 class="section-title">La Sinapsi Chimica e i Neurotrasmettitori</h3>
+                    <p>Il punto di contatto funzionale tra due neuroni o tra un neurone ed una cellula effettrice (muscolo o ghiandola) è detto <strong>sinapsi</strong>. Nelle sinapsi chimiche, quando l'impulso elettrico raggiunge il bottone presinaptico, provoca l'apertura dei canali del calcio e la fusione di vescicole contenenti <strong>neurotrasmettitori</strong> con la membrana cellulare. Le molecole di neurotrasmettitore (come acetilcolina, dopamina, serotonina, noradrenalina, GABA e glutammato) vengono riversate nella fessura sinaptica (uno spazio di circa 20-30 nanometri) e si legano a recettori specifici sulla membrana post-sinaptica, innescando una nuova risposta elettrica (eccitatoria o inibitoria).</p>
+
+                    <div class="catalogo-box">
+                        <strong>📑 Classificazione dei Neuroni:</strong>
+                        <ul>
+                            <li><strong>Neuroni Sensoriali (Afferenti):</strong> Trasportano gli stimoli dai recettori periferici al Sistema Nervoso Centrale.</li>
+                            <li><strong>Neuroni Motori (Efferenti):</strong> Trasmettono i comandi dal Sistema Nervoso Centrale ai muscoli ed alle ghiandole.</li>
+                            <li><strong>Interneuroni (di Associazione):</strong> Integrano le informazioni all'interno del cervello e del midollo spinale.</li>
+                        </ul>
+                    </div>
+
+                    <div class="admin-controls">
+                        <strong>⚙️ Opzioni Amministratore:</strong><br>
+                        <button class="btn-admin-edit" onclick="editStaticArticle('scienze-neuroni')">✏️ Modifica Testo</button>
+                    </div>
+                </article>
+
+                <!-- SCIENZE: SISTEMA NERVOSO CENTRALE -->
+                <article class="wiki-article" id="scienze-sistema-nervoso">
+                    <h2>Scienze: Il Sistema Nervoso Centrale (SNC)</h2>
+                    <div class="infobox">
+                        <div class="infobox-title">Sistema Nervoso Centrale</div>
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/3b/Central_nervous_system_en.svg/400px-Central_nervous_system_en.svg.png" alt="SNC">
+                        <table>
+                            <tr><th>Materia:</th><td>Anatomia e Fisiologia Umana</td></tr>
+                            <tr><th>Componenti:</th><td>Encefalo (Cervello, Cervelletto, Tronco) e Midollo Spinale</td></tr>
+                            <tr><th>Protezioni:</th><td>Scatola Cranica, Colonna Vertebrale, Meningi, Liquor</td></tr>
+                        </table>
+                    </div>
+
+                    <div class="presentation-card">
+                        <h4>📊 SCHEDA PRESENTAZIONE: Sistema Nervoso Centrale</h4>
+                        <div>
+                            <span class="keywords-tag">Encefalo</span>
+                            <span class="keywords-tag">Emisferi Cerebrali</span>
+                            <span class="keywords-tag">Cervelletto</span>
+                            <span class="keywords-tag">Tronco Encefalico</span>
+                            <span class="keywords-tag">Midollo Spinale e Riflessi</span>
+                        </div>
+                        <p style="margin-top:8px; font-size:13px;"><strong>Punti Chiave:</strong> Centro di coordinamento e controllo dell'intero organismo. Riceve le sensazioni, elabora le decisioni coscienti e involontarie, regola la memoria, il linguaggio e l'attività motoria.</p>
+                    </div>
+
+                    <h3 class="section-title">Organizzazione e Protezione del SNC</h3>
+                    <p>Il **Sistema Nervoso Centrale (SNC)** è la sede in cui vengono ricevute, elaborate e integrate tutte le informazioni provenienti dall'interno e dall'esterno del corpo, e da cui partono le risposte motorie, ghiandolari ed emotive. L'intero SNC è protetto da strutture ossee rigide (la scatola cranica per l'encefalo e la colonna vertebrale per il midollo spinale) e da tre membrane connettivali protettive sovrapposte dette <strong>meningi</strong>:</p>
+                    <p>1. *Dura Madre:* La membrana esterna più spessa e resistente.<br>
+                    2. *Aracnoide:* La membrana intermedia a forma di ragnatela.<br>
+                    3. *Pia Madre:* La membrana interna sottile e vascolarizzata aderente al tessuto nervoso.<br>
+                    Tra l'aracnoide e la pia madre scorre il <strong>liquido cefalorachidiano (liquor)</strong>, che ammortizza gli urti meccanici e nutre le cellule nervose.</p>
+
+                    <h3 class="section-title">L'Encefalo: Cervello, Cervelletto e Tronco Encefalico</h3>
+                    <p>L'<strong>Encefalo</strong> rappresenta la porzione contenuta nel cranio ed è diviso in tre sezioni principali:</p>
+                    <p>- <strong>Il Cervello (Telencefalo e Diencefalo):</strong> È diviso in due emisferi cerebrali (destro e sinistro) collegati dal *corpo calloso*. La superficie esterna presenta pieghe risvoltate divise in lobi (Frontale, Parietale, Temporale e Occipitale) costituite dalla <em>sostanza grigia</em> (corteccia cerebrale, contenente i corpi dei neuroni) responsabile del pensiero astratto, del linguaggio, della memoria, delle emozioni e del movimento volontario. La parte interna è la <em>sostanza bianca</em> (assoni mielinizzati). All'interno si trova il Diencefalo con il *Talamo* (stazione di smistamento sensoriale) e l'*Ipotalamo* (regolatore di temperatura, fame, sete e ghiandole endocrine).</p>
+                    <p>- <strong>Il Cervelletto:</strong> Situato nella parte posteriore del cranio sotto il cervello, coordina l'equilibrio statico e dinamico, regola il tono muscolare e rende fluidi e precisi i movimenti complessi apprisi nel tempo (come andare in bicicletta o suonare uno strumento).</p>
+                    <p>- <strong>Il Tronco Encefalico:</strong> Formato da *Mesencefalo*, *Ponte di Varolio* e *Midollo Allungato (Bulbo)*. Collega l'encefalo al midollo spinale e racchiude i centri nervosi vitali involontari che controllano il ritmo cardiaco, la respirazione, la pressione arteriosa, la deglutizione e i riflessi di tosse e vomito.</p>
+
+                    <h3 class="section-title">Il Midollo Spinale e l'Arco Riflesso</h3>
+                    <p>Il <strong>Midollo Spinale</strong> è un cordone nervoso lungo circa 45 cm che decorre all'interno del canale vertebrale dalla base del cranio fino alle prime vertebre lombari. In sezione trasversale presenta la sostanza grigia al centro (a forma di "farfalla") ed la sostanza bianca alla periferia. Dal midollo spinale emergono 31 paia di *nervi spinali* appartenenti al sistema nervoso periferico.</p>
+                    <p>Oltre a trasportare gli impulsi da e verso l'encefalo, il midollo spinale è la sede dell'<strong>arco riflesso</strong>: una risposta motoria automatica e rapidissima a uno stimolo doloroso o pericoloso (come ritrarre subito la mano toccando una superficie rovente) che avviene direttamente a livello del midollo spinale senza attendere che l'informazione arrivi al cervello.</p>
+
+                    <div class="catalogo-box">
+                        <strong>📑 Catalogo delle Sezioni dell'Encefalo:</strong>
+                        <ul>
+                            <li><strong>Corteccia Cerebrale:</strong> Pensiero cosciente, memoria, linguaggio, volontarietà.</li>
+                            <li><strong>Ipotalamo:</strong> Omeostasi corporea (temperatura, appetito, ormoni).</li>
+                            <li><strong>Cervelletto:</strong> Coordinazione motoria, postura ed equilibrio.</li>
+                            <li><strong>Bulbo / Tronco:</strong> Controllo automatico di respirazione e battito cardiaco.</li>
+                        </ul>
+                    </div>
+
+                    <div class="admin-controls">
+                        <strong>⚙️ Opzioni Amministratore:</strong><br>
+                        <button class="btn-admin-edit" onclick="editStaticArticle('scienze-sistema-nervoso')">✏️ Modifica Testo</button>
+                    </div>
+                </article>
+
+                <!-- SCIENZE: SISTEMA ENDOCRINO -->
+                <article class="wiki-article" id="scienze-endocrino">
+                    <h2>Scienze: Il Sistema Endocrino e il Controllo Ormonale</h2>
+                    <div class="infobox">
+                        <div class="infobox-title">Sistema Endocrino</div>
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/67/Endocrine_system_it.svg/400px-Endocrine_system_it.svg.png" alt="Sistema Endocrino">
+                        <table>
+                            <tr><th>Materia:</th><td>Fisiologia ed Endocrinologia Umana</td></tr>
+                            <tr><th>Ghiandole:</th><td>Ipofisi, Tiroide, Surreni, Pancreas, Gonadi</td></tr>
+                            <tr><th>Messaggeri:</th><td>Ormoni Chimici Riversati nel Sangue</td></tr>
+                        </table>
+                    </div>
+
+                    <div class="presentation-card">
+                        <h4>📊 SCHEDA PRESENTAZIONE: Sistema Endocrino</h4>
+                        <div>
+                            <span class="keywords-tag">Ghiandole Endocrine</span>
+                            <span class="keywords-tag">Ormoni e Sangue</span>
+                            <span class="keywords-tag">Ipotesi e Ipofisi</span>
+                            <span class="keywords-tag">Tiroide e Metabolismo</span>
+                            <span class="keywords-tag">Insulina e Glucagone</span>
+                        </div>
+                        <p style="margin-top:8px; font-size:13px;"><strong>Punti Chiave:</strong> Rete di ghiandole a secrezione interna che producono ormoni immersi nel circolo sanguigno per regolare la crescita, lo sviluppo sessuale, il metabolismo e l'equilibrio chimico (omeostasi).</p>
+                    </div>
+
+                    <h3 class="section-title">Generalità e Differenza tra Ghiandole Esocrine ed Endocrine</h3>
+                    <p>Il **Sistema Endocrino** è uno dei due grandi sistemi di regolazione dell'organismo (insieme al Sistema Nervoso). Mentre il sistema nervoso utilizza segnali elettrici rapidi lungo i nervi, il sistema endocrino lavora mediante <strong>ormoni</strong>: messaggeri chimici immessi direttamente nel torrente circolatorio sanguigno che raggiungono le cellule bersaglio dotate di recettori specifici, determinando risposte più lente ma prolungate nel tempo.</p>
+                    <p>Si distinguono due tipi di ghiandole:</p>
+                    <p>- <em>Ghiandole Esocrine:</em> Secernono i propri prodotti (come saliva, sudore, succhi gastrici) all'esterno del corpo o all'interno di cavità corporee tramite appositi dotti escretori.<br>
+                    - <em>Ghiandole Endocrine:</em> Sono prive di dotti escretori e riversano i propri ormoni direttamente nei vasi sanguigni.</p>
+
+                    <h3 class="section-title">L'Asse Ipotalamo-Ipofisario: Il Centro di Controllo</h3>
+                    <p>Il coordinamento tra sistema nervoso e sistema endocrino avviene nell'encefalo tramite l'<strong>ipotalamo</strong>. L'ipotalamo produce neurormoni che controllano la secrezione dell'<strong>ipofisi (o ghiandola pituitaria)</strong>, una piccola ghiandola situata alla base del cranio nella sella turcica, definita la "ghiandola direttrice" del corpo. L'ipofisi si divide in due lobi:</p>
+                    <p>1. <em>Adenoipofisi (anteriore):</em> Secerne l'ormone della crescita (GH o somatotropina), la prolattina e vari ormoni stimolanti (tiriotropina TSH, adrenocorticotropo ACTH, ormoni gonadotropi FSH e LH) che regolano il funzionamento delle altre ghiandole corporee.<br>
+                    2. <em>Neuroipofisi (posteriore):</em> Rilascia l'ossitocina (che stimola le contrazioni del parto e la montata lattea) e la vasopressina o ADH (ormone antidiuretico che regola il riassorbimento d'acqua nei reni).</p>
+
+                    <h3 class="section-title">Le Principali Ghiandole Endocrine Corporee</h3>
+                    <p>- <strong>La Tiroide:</strong> Situata nella parte anteriore del collo, secerne gli ormoni iodati tiroxina ($T_4$) e triiodotironina ($T_3$), che accelerano il metabolismo basale, la sintesi proteica ed il consumo di ossigeno. Producono anche la *calcitonina*, che riduce la concentrazione di calcio nel sangue depositandolo nelle ossa.</p>
+                    <p>- <strong>Le Paratiroidi:</strong> Quattro piccole ghiandole incastonate nella tiroide che secernono il *paratormone (PTH)*, antagonista della calcitonina, che aumenta il livello di calcio ematico mobilitandolo dalle ossa.</p>
+                    <p>- <strong>Le Ghiandole Surrenali:</strong> Posizionate sopra ciascun rene, sono formate da una parte *corticale* esterna (che produce cortisolo contro lo stress, aldosterone ed androgeni) e da una parte *midollare* interna (che secerne **adrenalina** e **noradrenalina**, preparando l'organismo alla reazione immediata di "attacco o fuga" aumentando pressione e frequenza cardiaca).</p>
+                    <p>- <strong>Il Pancreas Endocrino:</strong> Le *Isole di Langerhans* del pancreas secernono due ormoni antagonisti della glicemia: l'<strong>insulina</strong> (prodotta dalle cellule beta, ipoglicemizzante, fa entrare il glucosio nelle cellule riducendone il livello nel sangue) ed il <strong>glucagone</strong> (prodotto dalle cellule alfa, iperglicemizzante, stimola la scissione del glicogeno nel fegato).</p>
+
+                    <div class="catalogo-box">
+                        <strong>📑 Catalogo degli Ormoni e delle Loro Funzioni:</strong>
+                        <ul>
+                            <li><strong>GH (Somatotropina):</strong> Accrescimento osseo e muscolare.</li>
+                            <li><strong>Tiroxina ($T_4$):</strong> Regolazione della velocità del metabolismo corporeo.</li>
+                            <li><strong>Adrenalina:</strong> Risposta ad emergenze e stress acuto.</li>
+                            <li><strong>Insulina / Glucagone:</strong> Regolazione costante del livello di zucchero nel sangue.</li>
+                        </ul>
+                    </div>
+
+                    <div class="admin-controls">
+                        <strong>⚙️ Opzioni Amministratore:</strong><br>
+                        <button class="btn-admin-edit" onclick="editStaticArticle('scienze-endocrino')">✏️ Modifica Testo</button>
+                    </div>
+                </article>
+
+                <!-- ARTE: NEOCLASSICISMO -->
+                <article class="wiki-article" id="arte-neoclassicismo">
+                    <h2>Arte: Il Neoclassicismo e i Pittori più Famosi</h2>
+                    <div class="infobox">
+                        <div class="infobox-title">Neoclassicismo Artistico</div>
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/ca/Jacques-Louis_David_-_The_Oath_of_the_Horatii_-_Google_Art_Project.jpg/400px-Jacques-Louis_David_-_The_Oath_of_the_Horatii_-_Google_Art_Project.jpg" alt="Il Giuramento degli Orazi">
+                        <table>
+                            <tr><th>Periodo:</th><td>Seconda metà del XVIII secolo – Inizio XIX secolo</td></tr>
+                            <tr><th>Contesto:</th><td>Illuminismo e Scoperte di Pompei ed Ercolano</td></tr>
+                            <tr><th>Principi:</th><td>Nobile semplicità, quieta grandezza, simmetria</td></tr>
+                        </table>
+                    </div>
+
+                    <div class="presentation-card">
+                        <h4>📊 SCHEDA PRESENTAZIONE: Neoclassicismo</h4>
+                        <div>
+                            <span class="keywords-tag">Ritorno all'Antico</span>
+                            <span class="keywords-tag">Winckelmann</span>
+                            <span class="keywords-tag">Jacques-Louis David</span>
+                            <span class="keywords-tag">Antonio Canova</span>
+                            <span class="keywords-tag">Jean-Auguste-Dominique Ingres</span>
+                        </div>
+                        <p style="margin-top:8px; font-size:13px;"><strong>Punti Chiave:</strong> Movimento di reazione agli eccessi decorativi del Barocco e Rococò. Ispirandosi all'arte classica greca e romana, ricerca l'armonia formale, il rigore morale ed il disegno netto.</p>
+                    </div>
+
+                    <h3 class="section-title">Contesto Storico e Teorico</h3>
+                    <p>Il **Neoclassicismo** si affermò in Europa tra la metà del Settecento e i primi decenni dell'Ottocento. Il movimento fu alimentato dall'Illuminismo (che vedeva nella ragione classica il modello ideale) e dall'entusiasmo suscitato dagli scavi archeologici di Ercolano (1738) e Pompei (1748). Il teorico tedesco Johann Joachim Winckelmann formulò il principio guida del Neoclassicismo: l'unica via per diventare grandi era l'imitazione degli antichi greci, le cui opere esprimevano *"una nobile semplicità ed una quieta grandezza"*, rifiutando le passioni sfrenate e la decorazione superflua del Barocco.</p>
+
+                    <h3 class="section-title">I Grandi Maestri della Pittura Neoclassica</h3>
+                    <p>- <strong>Jacques-Louis David (1748–1825):</strong> È considerato il massimo pittore neoclassico e l'artista simbolo prima della Rivoluzione Francese e poi dell'Impero napoleonico. Nelle sue opere, David propone soggetti storici romani e greci come modelli di virtù civica, patriottismo e spirito di sacrificio. Nel capolavoro <em>Il giuramento degli Orazi</em> (1784), la composizione è rigorosamente geometrica e scandita dalla prospettiva lineare. Nella celebre tela <em>La morte di Marat</em> (1793), trasfigura il martire rivoluzionario assassinato nella vasca da bagno con una solennità sacrale ispirata al Cristo morto della Pietà michelangiolesca.</p>
+                    <p>- <strong>Jean-Auguste-Dominique Ingres (1780–1867):</strong> Allievo di David, portò la pittura neoclassica ai vertici della purezza formale attraverso un uso impeccabile della linea di contorno e del disegno. Famoso per i suoi ritratti aristocratici e per i nudi femminili sensualissimi inseriti in ambientazioni esotiche, come <em>La Grande Odalisca</em> (1814) e <em>Il bagno turco</em> (1862).</p>
+                    <p>- <strong>Anton Raphael Mengs (1728–1779):** Pittore boemo attivo a Roma e Madrid, amico di Winckelmann. Dipinse l'affresco del *Parnaso* in Villa Albani a Roma, considerato uno dei primi manifesti pittorici del Neoclassicismo.</p>
+
+                    <h3 class="section-title">La Scultura Neoclassica: Antonio Canova</h3>
+                    <p>Sebbene la pittura ebbe grandi maestri, la scultura rappresentò il vertice ideale del Neoclassicismo con l'italiano <strong>Antonio Canova (1757–1822)</strong>. Lavorando il marmo bianco di Carrara fino a conferirgli la morbidezza dell'epidermide reale, Canova creò capolavori immortali di grazia ed equilibrio senza tempo, quali <em>Amore e Psiche</em> (1787-1793), <em>Le Tre Grazie</em> e le tombe monumentali dei Papi a Roma.</p>
+
+                    <div class="catalogo-box">
+                        <strong>📑 Catalogo delle Opere Neoclassiche Famosi:</strong>
+                        <ul>
+                            <li><strong>Jacques-Louis David:</strong> *Il giuramento degli Orazi*, *La morte di Marat*, *Napoleone valica le Alpi*.</li>
+                            <li><strong>Antonio Canova (Scultura):</strong> *Amore e Psiche*, *Paolina Borghese come Venere vincitrice*.</li>
+                            <li><strong>Jean-Auguste-Dominique Ingres:</strong> *La Grande Odalisca*, *Napoleone I sul trono imperiale*.</li>
+                        </ul>
+                    </div>
+
+                    <div class="admin-controls">
+                        <strong>⚙️ Opzioni Amministratore:</strong><br>
+                        <button class="btn-admin-edit" onclick="editStaticArticle('arte-neoclassicismo')">✏️ Modifica Testo</button>
+                    </div>
+                </article>
+
+                <!-- ARTE: ROMANTICISMO -->
+                <article class="wiki-article" id="arte-romanticismo">
+                    <h2>Arte: Il Romanticismo e i Pittori più Famosi</h2>
+                    <div class="infobox">
+                        <div class="infobox-title">Romanticismo Artistico</div>
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/b2/Caspar_David_Friedrich_-_Wanderer_above_the_sea_of_fog.jpg/400px-Caspar_David_Friedrich_-_Wanderer_above_the_sea_of_fog.jpg" alt="Viandante sul mare di nebbia">
+                        <table>
+                            <tr><th>Periodo:</th><td>Fine XVIII secolo – Metà XIX secolo</td></tr>
+                            <tr><th>Temi:</th><td>Il Sublime, il Sentimento, la Natura Incontrollata, la Patria</td></tr>
+                            <tr><th>Opposto a:</th><td>Neoclassicismo e Razionalismo Illuminista</td></tr>
+                        </table>
+                    </div>
+
+                    <div class="presentation-card">
+                        <h4>📊 SCHEDA PRESENTAZIONE: Romanticismo</h4>
+                        <div>
+                            <span class="keywords-tag">Il Sublime</span>
+                            <span class="keywords-tag">Caspar David Friedrich</span>
+                            <span class="keywords-tag">Eugène Delacroix</span>
+                            <span class="keywords-tag">Théodore Géricault</span>
+                            <span class="keywords-tag">Francesco Hayez</span>
+                            <span class="keywords-tag">William Turner</span>
+                        </div>
+                        <p style="margin-top:8px; font-size:13px;"><strong>Punti Chiave:</strong> Movimento che mette al centro il sentimento libero, la drammaticità delle passioni, la nostalgia della storia nazionale e l'angoscia/meraviglia dell'uomo di fronte alla forza selvaggia della natura.</p>
+                    </div>
+
+                    <h3 class="section-title">Contesto e la Poetica del Sublime</h3>
+                    <p>Il **Romanticismo** si sviluppò in Germania, Inghilterra e Francia a cavallo tra Sette e Ottocento, per poi diffondersi in tutta Europa. Noto come reazione polemica contro la rigidità razionale dell'Illuminismo e le regole formali del Neoclassicismo, il Romanticismo rivendicò il primato dell'interiorità, dell'irrazionale, dell'inquietudine e delle passioni travolgenti.</p>
+                    <p>Concetto chiave dell'estetica romantica è **Il Sublime** (teorizzato dal filosofo Edmund Burke): quella sensazione complessa composta da meraviglia, smarrimento e salutare terrore che l'individuo prova di fronte a fenomeni naturali imponenti ed incontrollabili, come tempeste marine, abissi, eruzioni vulcaniche o distese infinite di nebbia e ghiaccio.</p>
+
+                    <h3 class="section-title">I Pittori del Romanticismo in Europa</h3>
+                    <p>- <strong>Caspar David Friedrich (1774–1840):</strong> Il caposcuola del Romanticismo tedesco. Dipinse paesaggi naturali metafisici in cui piccole figure umane, spesso viste di spalle (*Rückenfigur*), contemplano la vastità del creato. Nel celeberrimo <em>Il viandante sul mare di nebbia</em> (1818), l'uomo sulla roccia incarna la solitudine dell'anima di fronte all'infinito.</p>
+                    <p>- <strong>Théodore Géricault (1791–1824):** Artista francese drammatico, autore de *La zattera della Medusa* (1819), tela monumentale che raffigura i naufraghi della nave francese Medusa che si sbracciano disperati verso una nave all'orizzonte, metafora del dolore umano e dell'abbandono.</p>
+                    <p>- <strong>Eugène Delacroix (1798–1863):</strong> Capofila del Romanticismo francese, celebre per il colore dinamico, il movimento travolgente e l'esotismo. La sua opera simbolo è <em>La Libertà che guida il popolo</em> (1830), in cui la figura allegorica della Libertà a seno scoperto impugna il tricolore francese guidando la popolazione sulle barricate delle giornate rivoluzionarie di Parigi.</p>
+                    <p>- <strong>Joseph Mallord William Turner (1775–1851):</strong> Maestro del paesaggio romantico inglese. Nelle sue tele la materia pittorica si dissolve in vortici di luce, vapore, fuoco e colore per rappresentare la furia di mari in tempesta, incendi ed il moto dei primi treni a vapore (*Pioggia, vapore e velocità*).</p>
+                    <p>- <strong>Francesco Hayez (1791–1882):</strong> Il massimo esponente del Romanticismo storico in Italia. Le sue opere raffigurano episodi del passato medievale carichi di significati allegorici patriottici a sostegno del Risorgimento. Il suo dipinto più celebre, <em>Il Bacio</em> (1859), sotto la veste dell'addio appassionato tra due giovani amanti in abiti trecenteschi, celava l'alleanza tra Italia e Francia contro l'Austria.</p>
+
+                    <div class="catalogo-box">
+                        <strong>📑 Catalogo delle Opere Romantiche Iconiche:</strong>
+                        <ul>
+                            <li><strong>Caspar David Friedrich:</strong> *Il viandante sul mare di nebbia*, *Le falesie di gesso a Rügen*.</li>
+                            <li><strong>Théodore Géricault:</strong> *La zattera della Medusa*, *L'alienata con la mania del gioco*.</li>
+                            <li><strong>Eugène Delacroix:</strong> *La Libertà che guida il popolo*, *La barca di Dante*.</li>
+                            <li><strong>William Turner:</strong> *L'incendio delle Camere dei Lord e dei Comuni*, *Pioggia, vapore e velocità*.</li>
+                            <li><strong>Francesco Hayez:</strong> *Il Bacio*, *I vespri siciliani*, *Pietro Rossi*.</li>
+                        </ul>
+                    </div>
+
+                    <div class="admin-controls">
+                        <strong>⚙️ Opzioni Amministratore:</strong><br>
+                        <button class="btn-admin-edit" onclick="editStaticArticle('arte-romanticismo')">✏️ Modifica Testo</button>
+                    </div>
+                </article>
+
+                <!-- LETTERATURA: UGO FOSCOLO -->
+                <article class="wiki-article" id="letteratura-foscolo">
+                    <h2>Letteratura: Ugo Foscolo (Vita, Opere e Poetica)</h2>
+                    <div class="infobox">
+                        <div class="infobox-title">Ugo Foscolo</div>
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/4f/Ugo_Foscolo_by_Ferdinand_Pauli.jpg/400px-Ugo_Foscolo_by_Ferdinand_Pauli.jpg" alt="Ugo Foscolo">
+                        <table>
+                            <tr><th>Nascita:</th><td>6 febbraio 1778, Zante (Zacinto)</td></tr>
+                            <tr><th>Morte:</th><td>10 settembre 1827, Turnham Green (Londra)</td></tr>
+                            <tr><th>Movimento:</th><td>Neoclassicismo e Preromanticismo</td></tr>
+                            <tr><th>Opere Chiave:</th><td>Ortis, I Sepolcri, Sonetti, Le Grazie</td></tr>
+                        </table>
+                    </div>
+
+                    <div class="presentation-card">
+                        <h4>📊 SCHEDA PRESENTAZIONE: Ugo Foscolo</h4>
+                        <div>
+                            <span class="keywords-tag">Zante e la Grecia</span>
+                            <span class="keywords-tag">Campoformio e l'Esilio</span>
+                            <span class="keywords-tag">Jacopo Ortis</span>
+                            <span class="keywords-tag">Dei Sepolcri (1807)</span>
+                            <span class="keywords-tag">La Religione delle Illusioni</span>
+                        </div>
+                        <p style="margin-top:8px; font-size:13px;"><strong>Punti Chiave:</strong> Poeta e intellettuale di transizione tra il rigore formale neoclassico ed la passione civile preromantica. Cantore dell'amore di patria, della bellezza rasserenatrice e del valore eternatore della poesia.</p>
+                    </div>
+
+                    <h3 class="section-title">La Vita Inquieta e il Dramma Politico di Campoformio</h3>
+                    <p>Niccolò Ugo Foscolo nacque il 6 febbraio 1778 nell'isola ionica di Zante (o Zacinto), all'epoca territorio della Repubblica di Venezia, da Andrea Foscolo (medico veneziano) e Diamantina Spathis (donna greca). Questo legame viscerale con la Grecia classica influenzerà per sempre il suo culto della bellezza e del mito. Alla morte del padre si trasferì a Venezia, dove intraprese gli studi letterari appassionandosi ai classici latini e greci ed ai filosofi illuministi.</p>
+                    <p>Di accesi ideali giacobini e repubblicani, accolse Napoleone Bonaparte come un liberatore e un restauratore della libertà italiana, scrivendo l'ode <em>A Bonaparte liberatore</em> (1797). Tuttavia, la firma del **Trattato di Campoformio** (17 ottobre 1797), con cui Napoleone cedette la secolare Repubblica di Venezia all'Impero Austriaco in cambio delle Fiandre e della Lombardia, rappresentò per Foscolo un trauma devastante e il crollo di ogni speranza politica, segnando l'inizio del suo perenne esilio interiore.</p>
+
+                    <h3 class="section-title">Le Opere Fondamentali: Ortis, i Sonetti e I Sepolcri</h3>
+                    <p>- <strong>Le ultime lettere di Jacopo Ortis (1802):</strong> È il primo grande romanzo epistolare della letteratura italiana. Racconta, attraverso le lettere inviate all'amico Lorenzo Alderani, la tragedia del giovane Jacopo, diviso tra il dolore politico per la patria venduta e l'amore impossibile per Teresa (promessa sposa al razionale Orazio). Privato sia della patria che dell'amore, Jacopo conclude la sua vita con il suicidio. L'opera è fortemente autobiografica ed è ispirata al <em>Werther</em> di Goethe.</p>
+                    <p>- <strong>I Sonetti (1803):</strong> Raccolta di dodici sonetti tra cui spiccano capolavori famosi come <em>A Zacinto</em> (dedicato all'isola natale e al tema del mai più ritornare), <em>Alla Sera</em> (in cui la sera è vista come tranquilla immagine della morte liberatrice dal "reo tempo") e <em>In morte del fratello Giovanni</em>.</p>
+                    <p>- <strong>Dei Sepolcri (1807):** Carme di 295 endecasillabi sciolti indirizzato al poeta Ippolito Pindemonte. Scritto in reazione all'Editto napoleonico di Saint-Cloud (che imponeva di seppellire i morti fuori dai centri urbani in fosse comuni senza iscrizioni distinte), Foscolo sostiene la funzione civile e morale delle tombe. Sebbene il materialismo filosofico dimostri che con la morte tutto si dissolva nel nulla, le tombe mantengono viva la "corrispondenza d'amorosi sensensi" tra i vivi e i defunti, e i sepolcri dei grandi uomini (come quelli di Machiavelli, Michelangelo e Galileo in Santa Croce a Firenze) ispirano le anime nobili alle grandi imprese ed al riscatto della patria.</p>
+                    <p>- <strong>Le Grazie (incompiuto):** Poemetto allegorico in tre inni (a Venere, Vesta e Minerva) in cui la poesia neoclassica diventa celebrazione della bellezza e delle arti capaci di incivilire la rozzezza primordiale dell'umanità.</p>
+
+                    <h3 class="section-title">L'Esilio Volontario a Londra e la Morte</h3>
+                    <p>Nel 1815, crollato il Regno d'Italia napoleonico e ritornati gli austriaci a Milano, Foscolo rifiutò coerentemente di prestare giuramento di fedeltà all'imperatore d'Austria per mantenere la direzione della nuova rivista *Biblioteca Italiana*. Scelse l'esilio volontario in Svizzera e successivamente in Inghilterra. Visse gli ultimi anni a Londra in ristrettezze economiche e sommerso dai debiti, sostenendosi con conferenze e collaborazioni editoriali. Morì nel sobborgo londinese di Turnham Green il 10 settembre 1827. Nel 1871 le sue spoglie furono traslate in Italia e sepolte solennemente nella Basilica di Santa Croce a Firenze, tra i "grandi" che egli stesso aveva cantato nei *Sepolcri*.</p>
+
+                    <div class="catalogo-box">
+                        <strong>📑 Catalogo delle Opere Principali di Ugo Foscolo:</strong>
+                        <ul>
+                            <li><strong>1797:</strong> Ode *A Bonaparte liberatore*.</li>
+                            <li><strong>1802:</strong> *Le ultime lettere di Jacopo Ortis* (romanzo epistolare).</li>
+                            <li><strong>1803:</strong> *Poesie* (contiene i 12 Sonetti e le 2 Odi).</li>
+                            <li><strong>1807:</strong> *Dei Sepolcri* (carme in endecasillabi sciolti).</li>
+                            <li><strong>1812-1813:</strong> *Le Grazie* (poemetto neoclassico incompiuto).</li>
+                        </ul>
+                    </div>
+
+                    <div class="admin-controls">
+                        <strong>⚙️ Opzioni Amministratore:</strong><br>
+                        <button class="btn-admin-edit" onclick="editStaticArticle('letteratura-foscolo')">✏️ Modifica Testo</button>
+                    </div>
+                </article>
+
+                <!-- LETTERATURA: NEOCLASSICISMO E ROMANTICISMO -->
+                <article class="wiki-article" id="letteratura-neoclassicismo">
+                    <h2>Letteratura: Neoclassicismo e Romanticismo a Confronto</h2>
+                    <div class="infobox">
+                        <div class="infobox-title">Dibattito Letterario</div>
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/47/Caspar_David_Friedrich_-_Abtei_im_Eichwald_-_Google_Art_Project.jpg/400px-Caspar_David_Friedrich_-_Abtei_im_Eichwald_-_Google_Art_Project.jpg" alt="Romanticismo Letterario">
+                        <table>
+                            <tr><th>Epoca:</th><td>A cavallo tra XVIII e XIX secolo (1816 in Italia)</td></tr>
+                            <tr><th>Punto di svolta:</th><td>Articolo di Madame de Staël su "Biblioteca Italiana"</td></tr>
+                            <tr><th>Autori chiave:</th><td>Foscolo, Manzoni, Leopardi, Berchet</td></tr>
+                        </table>
+                    </div>
+
+                    <div class="presentation-card">
+                        <h4>📊 SCHEDA PRESENTAZIONE: Neoclassicismo vs Romanticismo</h4>
+                        <div>
+                            <span class="keywords-tag">Mito vs Storia Vera</span>
+                            <span class="keywords-tag">Lingua Aulica vs Lingua del Popolo</span>
+                            <span class="keywords-tag">Madame de Staël (1816)</span>
+                            <span class="keywords-tag">Alessandro Manzoni</span>
+                            <span class="keywords-tag">Giacomo Leopardi</span>
+                        </div>
+                        <p style="margin-top:8px; font-size:13px;"><strong>Punti Chiave:</strong> La polemica tra l'estetica neoclassica (fedeltà ai miti antichi e perfezione stilistica) ed il Romanticismo italiano (funzione civile, utile per scopo, vero per soggetto ed invenzione popolare).</p>
+                    </div>
+
+                    <h3 class="section-title">Il Neoclassicismo Letterario</h3>
+                    <p>In ambito letterario, il Neoclassicismo (espresso da autori come Vincenzo Monti e dal primo Foscolo) sosteneva l'imitazione dei modelli greci e latini, l'uso costante della mitologia classica (dei, ninfe, eroi antichi) e l'adozione di un linguaggio aulico, elegante ed elevato. L'obiettivo era il raggiungimento dell'armonia formale e della perfezione stilistica, considerate superiori ai turbamenti del presente.</p>
+
+                    <h3 class="section-title">Il Romanticismo Letterario e la Polemica Classico-Romantica del 1816</h3>
+                    <p>In Italia il Romanticismo nacque ufficialmente nel 1816 a seguito della pubblicazione sulla rivista *Biblioteca Italiana* dell'articolo di Madame de Staël intitolato <em>Sulla maniera e l'utilità delle traduzioni</em>. La scrittrice francese invitava gli intellettuali italiani a smetterla di frugare tra le ceneri dei miti greci e latini e a tradurre gli autori moderni inglesi e tedeschi per rinnovare la propria cultura.</p>
+                    <p>L'articolo scatenò una violentissima polemica:</p>
+                    <p>- <em>I Classicisti (Monti, Giordani):</em> Difesero la tradizione italiana e la superiorità dei modelli classici greci e romani.<br>
+                    - <em>I Romantici (Berchet, Visconti, Manzoni):</em> Raccolti attorno alla rivista <strong>Il Conciliatore</strong> (1818), sostennero che la letteratura dovesse rivolgersi non a una ristretta élite di dotti, ma al "popolo" (la classe media), trattando argomenti veri, storici, morali e civili.</p>
+
+                    <h3 class="section-title">Alessandro Manzoni e la Poetica Romantica Italiana</h3>
+                    <p>Il vertice del Romanticismo letterario italiano fu raggiunto da <strong>Alessandro Manzoni (1785–1873)</strong>. Nella celebre lettera a Cesare D'Azeglio, Manzoni sintetizzò la formula della poetica romantica risorgimentale:</p>
+                    <p>> <em>"La poesia e la letteratura devono porsi l'utile per scopo, il vero per soggetto e l'interessante per mezzo."</em></p>
+                    <p>Con il romanzo storico <em>I Promessi Sposi</em> (1827-1840), Manzoni abbandonò gli eroi mitologici per consacrare come protagonisti due umili filatori di seta lombardi (Renzo e Lucia), adottando una lingua fiorentina parlata e accessibile per unificare linguisticamente la nazione italiana.</p>
+
+                    <h3 class="section-title">Giacomo Leopardi: Tra Neoclassicismo e Pessimismo Cosmico</h3>
+                    <p>Figura originale ed inclassificabile fu <strong>Giacomo Leopardi (1798–1837)</strong>. Sebbene parteciperà alla polemica schierandosi apparentemente con i classicisti in difesa della poesia della natura e delle illusioni antiche, la sua lirica (*I Canti*, come *L'Infinito*, *A Silvia*, *La sera del dì di festa*, *Il risorgimento*, *La ginestra*) costituisce il vertice della sensibilità romantica ed esistenziale europea, fondata sulla teoria del piacere, sul dolore universale e sul <em>pessimismo cosmico</em> (la natura vista come matrigna indifferente alle sofferenze umane).</p>
+
+                    <div class="catalogo-box">
+                        <strong>📑 Tabella Comparativa Sintetica:</strong>
+                        <ul>
+                            <li><strong>Neoclassicismo:</strong> Modelli Antichi | Mitologia Greca/Romana | Stile Aulico ed Elevato | Pubblico Erudito.</li>
+                            <li><strong>Romanticismo:</strong> Verità Storica | Sentimento e Patria | Lingua Chiara ed Accessibile | Pubblico Popolare/Borghese.</li>
+                        </ul>
+                    </div>
+
+                    <div class="admin-controls">
+                        <strong>⚙️ Opzioni Amministratore:</strong><br>
+                        <button class="btn-admin-edit" onclick="editStaticArticle('letteratura-neoclassicismo')">✏️ Modifica Testo</button>
+                    </div>
+                </article>
+
+                <!-- ARITMETICA E GEOMETRIA TERZA MEDIA -->
+                <article class="wiki-article" id="matematica-terza-media">
+                    <h2>Aritmetica e Geometria: Programma di Terza Media</h2>
+                    <div class="infobox">
+                        <div class="infobox-title">Matematica 3ª Media</div>
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/cb/Pythagorean_theorem_in_a_circle.svg/400px-Pythagorean_theorem_in_a_circle.svg.png" alt="Teorema di Pitagora">
+                        <table>
+                            <tr><th>Materia:</th><td>Matematica e Geometria</td></tr>
+                            <tr><th>Livello:</th><td>Scuola Secondaria di Primo Grado</td></tr>
+                            <tr><th>Nuclei Tematici:</th><td>Algebra, Equazioni, Geometria Solida, Pitagora</td></tr>
+                        </table>
+                    </div>
+
+                    <div class="presentation-card">
+                        <h4>📊 SCHEDA PRESENTAZIONE: Matematica Terza Media</h4>
+                        <div>
+                            <span class="keywords-tag">Monomi e Polinomi</span>
+                            <span class="keywords-tag">Equazioni di 1º Grado</span>
+                            <span class="keywords-tag">Teorema di Pitagora</span>
+                            <span class="keywords-tag">Prismi e Piramidi</span>
+                            <span class="keywords-tag">Cilindro, Cono e Sfera</span>
+                            <span class="keywords-tag">Statistica e Probabilità</span>
+                        </div>
+                        <p style="margin-top:8px; font-size:13px;"><strong>Punti Chiave:</strong> Il programma completo di terza media: calcolo letterale ed algebra, risoluzione di equazioni di primo grado, principi di statistica e probabilità, applicazioni del Teorema di Pitagora ed formule dei volumi della geometria solida.</p>
+                    </div>
+
+                    <h3 class="section-title">Aritmetica ed Algebra: Dal Calcolo Letterale alle Equazioni</h3>
+                    <p>Nel corso del terzo anno della scuola secondaria di primo grado, lo studio dell'aritmetica evolve nell'<strong>Algebra</strong> attraverso l'introduzione delle lettere al posto dei numeri:</p>
+                    <p>1. <strong>Monomi e Polinomi:</strong> Un *monomio* è un'espressione algebrica data dal prodotto tra una parte numerica (coefficiente) ed una parte letterale. Un *polinomio* è la somma algebrica di più monomi. Si apprendono le operazioni fondamentali (somma, differenza, prodotto, divisione) ed i principali *prodotti notevoli*, come il quadrato di un binomio $(a+b)^2 = a^2 + 2ab + b^2$ ed il prodotto della somma per la differenza $(a+b)(a-b) = a^2 - b^2$.</p>
+                    <p>2. <strong>Le Equazioni di Primo Grado:</strong> Un'equazione è un'uguaglianza tra due espressioni algebriche verificata solo per determinati valori attribuiti all'incognita $x$. Si applicano i due principi di equivalenza:</p>
+                    <p>- *Primo Principio:* Addizionando o sottrando ad entrambi i membri una stessa quantità, l'equazione resta equivalente.<br>
+                    - *Secondo Principio:* Moltiplicando o dividendo entrambi i membri per uno stesso numero diverso da zero, l'equazione resta equivalente.<br>
+                    La forma normale è $ax = b$, la cui soluzione è $x = \frac{b}{a}$.</p>
+                    <p>3. <strong>Statistica e Probabilità:</strong> Studio dei dati mediante tabelle di frequenza, grafici (aerogrammi, istogrammi) ed indici di posizione centrale (<strong>Media aritmetica</strong>, <strong>Moda</strong> ed <strong>Mediana</strong>). Calcolo della probabilità di un evento semplice come rapporto tra casi favorevoli e casi possibili: $P(E) = \frac{f}{n}$.</p>
+
+                    <h3 class="section-title">Geometria Piana e Spaziale: Pitagora e la Geometria Solida</h3>
+                    <p>1. <strong>Il Teorema di Pitagora:</strong> In ogni triangolo rettangolo, l'area del quadrato costruito sull'ipotenusa $c$ è uguale alla somma delle aree dei quadrati costruiti sui due cateti $a$ ed $b$:</p>
+                    <p>$$c^2 = a^2 + b^2 \implies c = \sqrt{a^2 + b^2}$$</p>
+                    <p>$$a = \sqrt{c^2 - b^2} \quad \text{e} \quad b = \sqrt{c^2 - a^2}$$</p>
+                    <p>Il teorema si applica a tutte le figure piane scomponibili in triangoli rettangoli (diagonale del rettangolo o del quadrato, altezza del triangolo isoscele/equilatero, apotema del rombo e trapezi).</p>
+
+                    <p>2. <strong>Geometria Solida (Poliedri e Solidi di Rotazione):</strong> Studio della superficie laterale ($S_l$), superficie totale ($S_t$) e volume ($V$) dei solidi tridimensionali:</p>
+                    <p>- <strong>Prisma Retto e Parallelepipedo:</strong> $V = S_b \cdot h$ (Area di base per altezza).<br>
+                    - <strong>Piramide Retta:</strong> $V = \frac{S_b \cdot h}{3}$.<br>
+                    - <strong>Cilindro (Solido generato dalla rotazione di un rettangolo):</strong> $S_b = \pi \cdot r^2$, $S_l = 2\pi \cdot r \cdot h$, $V = \pi \cdot r^2 \cdot h$.<br>
+                    - <strong>Cono (Solido generato dalla rotazione di un triangolo rettangolo):</strong> $V = \frac{\pi \cdot r^2 \cdot h}{3}$, dove l'apotema $a$, il raggio $r$ ed l'altezza $h$ sono legati dal Teorema di Pitagora ($a = \sqrt{r^2 + h^2}$).<br>
+                    - <strong>Sfera (Solido generato dalla rotazione di un semicerchio):</strong> Superficie $S = 4\pi \cdot r^2$, Volume $V = \frac{4}{3}\pi \cdot r^3$.</p>
+
+                    <div class="catalogo-box">
+                        <strong>📑 Catalogo Formulario Essenziale di Geometria Solida:</strong>
+                        <ul>
+                            <li><strong>Cubo:</strong> $S_t = 6 \cdot l^2$ | $V = l^3$ | Diagonale $d = l \cdot \sqrt{3}$.</li>
+                            <li><strong>Cilindro:</strong> $V = \pi \cdot r^2 \cdot h$.</li>
+                            <li><strong>Cono:</strong> $V = \frac{\pi \cdot r^2 \cdot h}{3}$.</li>
+                            <li><strong>Sfera:</strong> $V = \frac{4}{3} \cdot \pi \cdot r^3$.</li>
+                        </ul>
+                    </div>
+
+                    <div class="admin-controls">
+                        <strong>⚙️ Opzioni Amministratore:</strong><br>
+                        <button class="btn-admin-edit" onclick="editStaticArticle('matematica-terza-media')">✏️ Modifica Testo</button>
+                    </div>
+                </article>
+
+                <!-- 🏛️ RISORGIMENTO E PERSONAGGI STORICI -->
+
+                <!-- GIUSEPPE GARIBALDI -->
+                <article class="wiki-article" id="garibaldi">
+                    <h2>Giuseppe Garibaldi</h2>
+                    <div class="infobox">
+                        <div class="infobox-title">Giuseppe Garibaldi</div>
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/5a/Giuseppe_Garibaldi_by_Gustave_Le_Gray%2C_1866.jpg/400px-Giuseppe_Garibaldi_by_Gustave_Le_Gray%2C_1866.jpg" alt="Giuseppe Garibaldi">
+                        <table>
+                            <tr><th>Nascita:</th><td>4 luglio 1807, Nizza</td></tr>
+                            <tr><th>Morte:</th><td>2 giugno 1882, Caprera</td></tr>
+                            <tr><th>Ruolo:</th><td>Generale, Patriota, Eroe dei Due Mondi</td></tr>
+                        </table>
+                    </div>
+
+                    <div class="presentation-card">
+                        <h4>📊 SCHEDA PRESENTAZIONE: Giuseppe Garibaldi</h4>
+                        <div>
+                            <span class="keywords-tag">Eroe dei Due Mondi</span>
+                            <span class="keywords-tag">Spedizione dei Mille (1860)</span>
+                            <span class="keywords-tag">Camicie Rosse</span>
+                            <span class="keywords-tag">Incontro di Teano</span>
+                        </div>
+                        <p style="margin-top:8px; font-size:13px;"><strong>Punti Chiave:</strong> Generale e patriota nizzardo, condottiero della Spedizione dei Mille nel 1860. Ha liberato il Mezzogiorno sottomettendo i Borbone e consegnando il Sud Italia a re Vittorio Emanuele II.</p>
+                    </div>
+
+                    <h3 class="section-title">Giovinezza, Navigazione ed Esilio in Sud America</h3>
+                    <p>Giuseppe Garibaldi nacque a Nizza il 4 luglio 1807 da una famiglia di marinai e mercanti. Intrapresa la carriera sul mare, nel 1832 ottenne il titolo di capitano di seconda classe. Avvicinatosi agli ideali mazziniani, si iscrisse alla *Giovine Italia* nel 1833. A seguito del fallimento della cospirazione insurrezionale a Genova nel 1834, venne condannato a morte in contumacia dal tribunale di Torino e fu costretto a rifugiarsi in Sud America.</p>
+                    <p>In America Latina trascorse oltre dodici anni (guadagnandosi il titolo di *Eroe dei Due Mondi*), combattendo come guerrigliero nella Guerra dei Farrapos in Brasile e difendendo l'indipendenza dell'Uruguay alla testa della celebre Legione Italiana (da cui nacque l'uso distintivo delle *camicie rosse*). In questo periodo conobbe la sua compagna di vita e di lotta, Ana Maria de Jesus Ribeiro (Anita Garibaldi).</p>
+
+                    <h3 class="section-title">Il 1848, la Repubblica Romana e la Spedizione dei Mille</h3>
+                    <p>Tornato in Italia nel 1848, partecipò alla Prima Guerra d'Indipendenza e l'anno seguente fu il principale condottiero militare a difesa della Repubblica Romana contro le truppe francesi inviate da Napoleone III in soccorso del Papa. La caduta della Repubblica lo costrinse a una drammatica fuga attraverso l'Appennino, durante la quale morì la moglie Anita.</p>
+                    <p>Nel maggio del 1860 realizzò la sua impresa più memorabile: la **Spedizione dei Mille**. Salpato da Quarto alla guida di circa 1.089 volontari, sbarcò a Marsala, sconfisse l'esercito borbonico a Calatafimi, prese Palermo e Napoli e assunse la dittatura della Sicilia e del Mezzogiorno in nome dell'Italia. Il 26 ottobre 1860, nello storico **Incontro di Teano**, Garibaldi salutò Vittorio Emanuele II come re d'Italia, cedendo tutti i territori conquistati al nuovo Stato nazionale senza pretendere cariche pubbliche.</p>
+
+                    <div class="catalogo-box">
+                        <strong>📑 Cronologia delle Imprese Garibaldine:</strong>
+                        <ul>
+                            <li><strong>1834:</strong> Condanna a morte a Torino ed esilio in Sud America.</li>
+                            <li><strong>1849:</strong> Difesa della Repubblica Romana dall'assedio francese.</li>
+                            <li><strong>1860:</strong> Spedizione dei Mille e crollo del Regno delle Due Sicilie.</li>
+                            <li><strong>1866:</strong> Vittoria a Bezzecca durante la Terza Guerra d'Indipendenza ("Obbedisco").</li>
+                            <li><strong>1882:</strong> Morte nell'isola di Caprera in Sardegna.</li>
+                        </ul>
+                    </div>
+
+                    <div class="admin-controls">
+                        <strong>⚙️ Opzioni Amministratore:</strong><br>
+                        <button class="btn-admin-edit" onclick="editStaticArticle('garibaldi')">✏️ Modifica Testo</button>
+                    </div>
+                </article>
+
+                <!-- GIUSEPPE MAZZINI -->
+                <article class="wiki-article" id="mazzini">
+                    <h2>Giuseppe Mazzini</h2>
+                    <div class="infobox">
+                        <div class="infobox-title">Giuseppe Mazzini</div>
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/f/f3/Giuseppe_Mazzini_by_Nadar.jpg/400px-Giuseppe_Mazzini_by_Nadar.jpg" alt="Giuseppe Mazzini">
+                        <table>
+                            <tr><th>Nascita:</th><td>22 giugno 1805, Genova</td></tr>
+                            <tr><th>Morte:</th><td>10 marzo 1872, Pisa</td></tr>
+                            <tr><th>Ruolo:</th><td>Politico, Filosofo, Ideologo Risorgimentale</td></tr>
+                        </table>
+                    </div>
+
+                    <div class="presentation-card">
+                        <h4>📊 SCHEDA PRESENTAZIONE: Giuseppe Mazzini</h4>
+                        <div>
+                            <span class="keywords-tag">Giovine Italia (1831)</span>
+                            <span class="keywords-tag">Unità e Repubblica</span>
+                            <span class="keywords-tag">Pensiero e Azione</span>
+                            <span class="keywords-tag">Roma Repubblicana</span>
+                        </div>
+                        <p style="margin-top:8px; font-size:13px;"><strong>Punti Chiave:</strong> Pensatore e patriota genovese, fondatore della Giovine Italia e teorico dell'Italia "Una, Libera, Indipendente e Repubblicana".</p>
+                    </div>
+
+                    <h3 class="section-title">Formazione e la Fondazione della Giovine Italia</h3>
+                    <p>Giuseppe Mazzini nacque a Genova il 22 giugno 1805. Laureatosi in diritto nel 1827, aderì precocemente alla Carboneria. Deluso dalla segretezza e dal fallimento dei moti settari del 1830-1831, nel 1831 fondò a Marsiglia l'associazione **Giovine Italia**. A differenza delle vecchie sette, la Giovine Italia si dotò di un programma pubblico, chiaro ed esplicito: la creazione di un'Italia una, indipendente, libera e repubblicana attraverso l'educazione politica del popolo e l'insurrezione popolare.</p>
+
+                    <h3 class="section-title">Il Pensiero Politico: "Pensiero e Azione" e "Dio e Popolo"</h3>
+                    <p>La filosofia mazziniana univa una profonda fede laica in un'idea di Progresso a una visione etica del dovere civile, riassunta dai celebri motti *"Dio e Popolo"* e *"Pensiero e Azione"*. Mazzini sosteneva che l'emancipazione italiana fosse la premessa per un'alleanza universale tra le nazioni libere (da cui la successiva fondazione della *Giovine Europa* nel 1834). Nel 1849 fu a capo del Triumvirato costituzionale della Repubblica Romana insieme ad Aurelio Saffi e Carlo Armellini, promuovendo una costituzione democratica e d'avanguardia.</p>
+                    <p>Morì in esilio clandestino a Pisa il 10 marzo 1872 sotto lo pseudonimo di Daniele Drago, rimanendo critico verso l'esito monarchico e conservatore dell'unità italiana condotta da Cavour e dai Savoia.</p>
+
+                    <div class="admin-controls">
+                        <strong>⚙️ Opzioni Amministratore:</strong><br>
+                        <button class="btn-admin-edit" onclick="editStaticArticle('mazzini')">✏️ Modifica Testo</button>
+                    </div>
+                </article>
+
+                <!-- VITTORIO EMANUELE II -->
+                <article class="wiki-article" id="vittorio-emanuele">
+                    <h2>Vittorio Emanuele II di Savoia</h2>
+                    <div class="infobox">
+                        <div class="infobox-title">Vittorio Emanuele II</div>
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/6f/Vittorio_Emanuele_II_di_Savoia_foto.jpg/400px-Vittorio_Emanuele_II_di_Savoia_foto.jpg" alt="Vittorio Emanuele II">
+                        <table>
+                            <tr><th>Nascita:</th><td>14 marzo 1820, Torino</td></tr>
+                            <tr><th>Morte:</th><td>9 gennaio 1878, Roma</td></tr>
+                            <tr><th>Titolo:</th><td>Primo Re d'Italia (1861–1878)</td></tr>
+                        </table>
+                    </div>
+
+                    <div class="presentation-card">
+                        <h4>📊 SCHEDA PRESENTAZIONE: Vittorio Emanuele II</h4>
+                        <div>
+                            <span class="keywords-tag">Padre della Patria</span>
+                            <span class="keywords-tag">Re Galantuomo</span>
+                            <span class="keywords-tag">Statuto Albertino</span>
+                            <span class="keywords-tag">Proclamazione 1861</span>
+                        </div>
+                        <p style="margin-top:8px; font-size:13px;"><strong>Punti Chiave:</strong> Ultimo re di Sardegna e primo Re d'Italia. Mantenne lo Statuto Albertino guadagnandosi il titolo di Re Galantuomo e guidò il processo di unificazione.</p>
+                    </div>
+
+                    <h3 class="section-title">La Salita al Trono e lo Statuto Albertino</h3>
+                    <p>Vittorio Emanuele Maria Alberto Eugenio Ferdinando Tommaso di Savoia nacque a Torino il 14 marzo 1820. Divenne re del Regno di Sardegna nel marzo 1849 a seguito dell'abdicazione del padre Carlo Alberto dopo la sconfitta di Novara. Nonostante le pressioni dell'Impero Austriaco, rifiutò di revocare lo **Statuto Albertino**, la carta costituzionale concessa nel 1848, trasformando il Piemonte nel punto di riferimento per tutti gli esuli e i liberali d'Italia.</p>
+
+                    <h3 class="section-title">L'Unificazione Nazionale ed il Regno d'Italia</h3>
+                    <p>Affiancato dalla straordinaria capacità diplomatica di Camillo Benso di Cavour, Vittorio Emanuele II partecipò alla Seconda Guerra d'Indipendenza (1859) e sostenne l'impresa dei Mille. Il 17 marzo 1861, il primo Parlamento italiano proclamò Vittorio Emanuele II *"Re d'Italia per grazia di Dio e volontà della Nazione"*. Sotto il suo regno l'Italia completò l'unificazione annettendo il Veneto nel 1866 e Roma nel 1870 con la breccia di Porta Pia, spostando la capitale nella Città Eterna. Morì a Roma il 9 gennaio 1878.</p>
+
+                    <div class="admin-controls">
+                        <strong>⚙️ Opzioni Amministratore:</strong><br>
+                        <button class="btn-admin-edit" onclick="editStaticArticle('vittorio-emanuele')">✏️ Modifica Testo</button>
+                    </div>
+                </article>
+
+                <!-- CAMILLO BENSO DI CAVOUR -->
+                <article class="wiki-article" id="cavour">
+                    <h2>Camillo Benso, conte di Cavour</h2>
+                    <div class="infobox">
+                        <div class="infobox-title">Camillo Benso di Cavour</div>
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a2/Camillo_Benso_Conte_di_Cavour_bust.jpg/400px-Camillo_Benso_Conte_di_Cavour_bust.jpg" alt="Cavour">
+                        <table>
+                            <tr><th>Nascita:</th><td>10 agosto 1810, Torino</td></tr>
+                            <tr><th>Morte:</th><td>6 giugno 1861, Torino</td></tr>
+                            <tr><th>Ruolo:</th><td>Primo Presidente del Consiglio d'Italia</td></tr>
+                        </table>
+                    </div>
+
+                    <h3 class="section-title">Giovinezza, Formazione ed Economia Piemontese</h3>
+                    <p>Camillo Paolo Filippo Giulio Benso, conte di Cavour, nacque a Torino il 10 agosto 1810 da una nobile famiglia dell'aristocrazia piemontese. Abbandonata la carriera militare nel 1831, viaggiò a lungo in Francia ed Inghilterra per studiare il sistema parlamentare ed il processo di industrializzazione. Tornato in Piemonte, gestì le tenute agricole di famiglia ed avanzò riforme economiche liberiste, potenziando la rete stradale e ferroviaria ed il porto di Genova. Nel 1847 co-fondò il quotidiano <em>Il Risorgimento</em> e nel 1852 fu nominato Presidente del Consiglio dei Ministri del Regno di Sardegna.</p>
+
+                    <h3 class="section-title">La Strategia Diplomatica e l'Unità d'Italia</h3>
+                    <p>Cavour capì che il Piemonte non avrebbe mai potuto sconfiggere l'Austria senza l'aiuto delle grandi potenze europee. Inviò le truppe piemontesi nella Guerra di Crimea (1855) per poter sollevare la questione italiana al Congresso di Parigi del 1856. Nel 1858 concluse con Napoleone III gli Accordi segreti di Plombières, garantendo l'intervento francese nella Seconda Guerra d'Indipendenza (1859). Gestendo con maestria le annessioni dell'Italia centrale e la Spedizione dei Mille di Garibaldi, Cavour portò alla nascita del Regno d'Italia il 17 marzo 1861, di cui fu il primo Presidente del Consiglio fino alla sua improvvisa morte il 6 giugno 1861.</p>
+
+                    <div class="admin-controls">
+                        <strong>⚙️ Opzioni Amministratore:</strong><br>
+                        <button class="btn-admin-edit" onclick="editStaticArticle('cavour')">✏️ Modifica Testo</button>
+                    </div>
+                </article>
+
+                <!-- NAPOLEONE BONAPARTE -->
+                <article class="wiki-article" id="napoleone">
+                    <h2>Napoleone Bonaparte</h2>
+                    <div class="infobox">
+                        <div class="infobox-title">Napoleone I</div>
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/50/Jacques-Louis_David_-_The_Emperor_Napoleon_in_His_Study_at_the_Tuileries_-_Google_Art_Project.jpg/400px-Jacques-Louis_David_-_The_Emperor_Napoleon_in_His_Study_at_the_Tuileries_-_Google_Art_Project.jpg" alt="Napoleone">
+                        <table>
+                            <tr><th>Nascita:</th><td>15 agosto 1769, Ajaccio</td></tr>
+                            <tr><th>Morte:</th><td>5 maggio 1821, Sant'Elena</td></tr>
+                            <tr><th>Ruolo:</th><td>Imperatore dei Francesi</td></tr>
+                        </table>
+                    </div>
+
+                    <h3 class="section-title">Origini e l'Ascesa Militare (1769-1799)</h3>
+                    <p>Napoleone Bonaparte nacque ad Ajaccio, in Corsica, il 15 agosto 1769. Formatosi nelle scuole militari francesi come ufficiale d'artiglieria, si distinse durante la Rivoluzione Francese. Nel 1796 ottenne il comando dell'Armata d'Italia, sconfiggendo gli piemontesi ed gli austriaci e firmando il Trattato di Campoformio (1797). Dopo la campagna d'Egitto, il 9 novembre 1799 (18 brumaio) attuò un colpo di Stato a Parigi facendosi nominare Primo Console.</p>
+
+                    <h3 class="section-title">L'Impero, le Grandi Vittorie e la Caduta</h3>
+                    <p>Il 2 dicembre 1804 fu incoronato Imperatore dei Francesi nella Cattedrale di Notre-Dame. Guidò la *Grande Armée* in vittorie memorabili contro le coalizioni antifrancesi ad Austerlitz (1805), Jena (1806) e Wagram (1809), dominando gran parte dell'Europa continentale e promulgando il *Codice Napoleonico*. La disastrosa campagna di Russia del 1812 e la sconfitta di Lipsia (1813) portarono alla sua abdicazione ed all'esilio all'Isola d'Elba. Fuggito nel 1815 per i celebri "Cento Giorni", fu sconfitto definitivamente nella battaglia di Waterloo (18 giugno 1815) dagli anglo-prussiani. Morì in esilio sull'isola atlantica di Sant'Elena il 5 maggio 1821.</p>
+
+                    <div class="admin-controls">
+                        <strong>⚙️ Opzioni Amministratore:</strong><br>
+                        <button class="btn-admin-edit" onclick="editStaticArticle('napoleone')">✏️ Modifica Testo</button>
+                    </div>
+                </article>
+
+                <!-- GIULIO CESARE -->
+                <article class="wiki-article" id="cesare">
+                    <h2>Giulio Cesare</h2>
+                    <div class="infobox">
+                        <div class="infobox-title">Gaius Iulius Caesar</div>
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/f/f7/Julius_Caesar_Cumberland_GB.jpg/400px-Julius_Caesar_Cumberland_GB.jpg" alt="Cesare">
+                        <table>
+                            <tr><th>Nascita:</th><td>13 luglio 100 a.C., Roma</td></tr>
+                            <tr><th>Morte:</th><td>15 marzo 44 a.C., Roma</td></tr>
+                            <tr><th>Ruolo:</th><td>Dittatore della Repubblica Romana</td></tr>
+                        </table>
+                    </div>
+
+                    <h3 class="section-title">La Conquista della Gallia e il Varo del Rubicone</h3>
+                    <p>Gaius Iulius Caesar nacque a Roma il 13 luglio 100 a.C. Stringendo il Primo Triumvirato con Pompeo e Crasso nel 60 a.C., ottenne il consolato e successivamente il proconsolato in Gallia. Tra il 58 ed il 50 a.C. sottomesse le tribù galliche estendendo i confini romani fino al Reno ed alla Manica. Nel 49 a.C., quando il Senato gli ordinò di sciogliere le legioni, Cesare attraversò in armi il fiume Rubicone (*Alea iacta est*), dando inizio alla guerra civile romana contro Pompeo, che sconfisse a Farsalo nel 48 a.C.</p>
+
+                    <h3 class="section-title">Dittatura e l'Assassinio alle Idi di Marzo</h3>
+                    <p>Padrone assoluto di Roma, venne nominato dittatore perpetuo nel 44 a.C. Introdusse riforme storiche come la ristrutturazione dei municipi, la concessione della cittadinanza ed il Calendario Giuliano. Temendo la fine definitiva della Repubblica, un gruppo di congiurati senatori guidati da Bruto e Cassio lo assassinò con 23 pugnalate durante le Idi di Marzo (15 marzo 44 a.C.) all'interno della Curia di Pompeo.</p>
+
+                    <div class="admin-controls">
+                        <strong>⚙️ Opzioni Amministratore:</strong><br>
+                        <button class="btn-admin-edit" onclick="editStaticArticle('cesare')">✏️ Modifica Testo</button>
+                    </div>
+                </article>
+
+                <!-- ⚡ ALTRI EVENTI E SCIENZIATI -->
+
+                <!-- JUSTIN LEE TURNER -->
+                <article class="wiki-article" id="justin-lee-turner">
+                    <h2>Justin Lee Turner</h2>
+                    <div class="infobox">
+                        <div class="infobox-title">Justin Lee Turner</div>
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/62/Harris_County_Courthouse_Houston_Texas.jpg/400px-Harris_County_Courthouse_Houston_Texas.jpg" alt="Harris County Courthouse">
+                        <table>
+                            <tr><th>Nascita:</th><td>6 agosto 1983, Carolina del Sud</td></tr>
+                            <tr><th>Morte:</th><td>3 marzo 1989, Moncks Corner (Età: 5 anni)</td></tr>
+                            <tr><th>Ambito:</th><td>Caso di Cronaca Nera Statunitense</td></tr>
+                            <tr><th>Svolta:</th><td>Arresto dei genitori (Gennaio 2024)</td></tr>
+                        </table>
+                    </div>
+
+                    <h3 class="section-title">La Scomparsa e le Indagini del 1989</h3>
+                    <p>Justin Lee Turner era un bambino statunitense di 5 anni che risiedeva nella comunità rurale di Moncks Corner, in Carolina del Sud. La mattina del 3 marzo 1989 non salì a bordo dello scuolabus per l'asilo, facendo scattare imponenti ricerche da parte delle forze dell'ordine e di centinaia di volontari. Due giorni dopo, il 5 marzo, il corpo senza vita del piccolo venne ritrovato soffocato e strangolato all'interno di un camper parcheggiato nella proprietà di famiglia. Nonostante forti sospetti sul padre Victor e sulla matrigna Megan Turner, le limitazioni tecnologiche delle analisi biologiche dell'epoca impedirono un'incriminazione formale, trasformando il caso in uno storico <em>cold case</em>.</p>
+
+                    <h3 class="section-title">La Svolta Forense ed il Doppio Arresto del 2024</h3>
+                    <p>Nel 2021 l'unità casi irrisolti del Berkeley County Sheriff's Office ha riaperto le indagini sottoponendo le fibre dei vestiti ed i reperti conservati dal 1989 alle moderne tecniche di microscopia e sequenziamento del DNA forense. Il 10 gennaio 2024, a quasi 35 anni dal delitto, gli investigatori hanno tratto in arresto il padre Victor Lee Turner (69 anni) e la matrigna Megan Turner (63 anni) con l'accusa formale di omicidio volontario.</p>
+
+                    <div class="admin-controls">
+                        <strong>⚙️ Opzioni Amministratore:</strong><br>
+                        <button class="btn-admin-edit" onclick="editStaticArticle('justin-lee-turner')">✏️ Modifica Testo</button>
+                    </div>
+                </article>
+
+                <!-- ELISA LAM -->
+                <article class="wiki-article" id="lam">
+                    <h2>Elisa Lam</h2>
+                    <div class="infobox">
+                        <div class="infobox-title">Elisa Lam</div>
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/cd/Cecil_Hotel_Los_Angeles_2013.jpg/400px-Cecil_Hotel_Los_Angeles_2013.jpg" alt="Cecil Hotel Los Angeles">
+                        <table>
+                            <tr><th>Nascita:</th><td>30 aprile 1991, Vancouver</td></tr>
+                            <tr><th>Morte:</th><td>Febbraio 2013, Los Angeles</td></tr>
+                            <tr><th>Luogo:</th><td>Cecil Hotel, Los Angeles</td></tr>
+                        </table>
+                    </div>
+
+                    <h3 class="section-title">Scomparsa al Cecil Hotel e il Video dell'Ascensore</h3>
+                    <p>Elisa Lam (Lam Ho Yi) era una studentessa canadese di ventun anni dell'Università della Columbia Britannica. Nel gennaio 2013 intraprese un viaggio in solitaria in California, alloggiando al Cecil Hotel nel quartiere Skid Row di Los Angeles. Scomparsa il 31 gennaio 2013, il 14 febbraio la polizia di Los Angeles diffusi il filmato delle telecamere dell'ascensore dell'hotel che la mostrava compiere gesti bizzarri e disordinati, premendo pulsanti ed interagendo con il corridoio vuoto. Il video divenne virale su internet con decine di milioni di visualizzazioni.</p>
+
+                    <h3 class="section-title">Ritrovamento nel Serbatoio ed Autopsia</h3>
+                    <p>Il 19 febbraio 2013, a seguito delle lamentele dei clienti per l'anomala pressione ed il sapore sgradevole dell'acqua potabile, il corpo di Elisa venne rinvenuto all'interno di uno dei quattro serbatoi d'acqua sul tetto dell'edificio. L'ufficio del coroner della contea di Los Angeles archiviò la morte come annegamento accidentale, citando il disturbo bipolare ed la mancata assunzione dei farmaci prescritti come fattori determinanti della tragedia.</p>
+
+                    <div class="admin-controls">
+                        <strong>⚙️ Opzioni Amministratore:</strong><br>
+                        <button class="btn-admin-edit" onclick="editStaticArticle('lam')">✏️ Modifica Testo</button>
+                    </div>
+                </article>
+
+                <!-- ATTENTATI 11 SETTEMBRE 2001 -->
+                <article class="wiki-article" id="11settembre">
+                    <h2>Attentati dell'11 settembre 2001</h2>
+                    <div class="infobox">
+                        <div class="infobox-title">11 Settembre 2001</div>
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c7/September_11_attacks_World_Trade_Center_collapse.jpg/400px-September_11_attacks_World_Trade_Center_collapse.jpg" alt="11 Settembre">
+                        <table>
+                            <tr><th>Data:</th><td>11 settembre 2001</td></tr>
+                            <tr><th>Vittime:</th><td>2.977 morti civili + 19 terroristi</td></tr>
+                            <tr><th>Esecutori:</th><td>Al-Qaida (Osama bin Laden)</td></tr>
+                        </table>
+                    </div>
+
+                    <h3 class="section-title">Svolgimento dei Dirottamenti ed Impatti</h3>
+                    <p>La mattina dell'11 settembre 2001, un commando di 19 terroristi dell'organizzazione islamista Al-Qaida dirottò quattro aerei commerciali di linea negli USA. Alle 8:46 il volo American Airlines 11 colpi la Torre Nord del World Trade Center a New York, seguito alle 9:03 dal volo United Airlines 175 sulla Torre Sud. Entrambi i grattacieli di 110 piani crollarono su se stessi nell'arco di due ore. Alle 9:37 il terzo aereo (American 77) impattò contro la facciata del Pentagono in Virginia, mentre il quarto (United 93) precipitò in Pennsylvania a seguito della disperata rivolta dei passeggeri a bordo.</p>
+
+                    <h3 class="section-title">Vittime, Perchè e Conseguenze Globali</h3>
+                    <p>Gli attacchi provocarono la morte di 2.977 persone innocenti (tra cui 343 vigili del fuoco di New York). L'operazione ideata da Osama bin Laden spinta il presidente George W. Bush a proclamare la "guerra globale al terrorismo", sfociata nelle invasioni militari dell'Afghanistan (2001) e dell'Iraq (2003) e nella riorganizzazione dei protocolli di sicurezza aerea in tutto il mondo.</p>
+
+                    <div class="admin-controls">
+                        <strong>⚙️ Opzioni Amministratore:</strong><br>
+                        <button class="btn-admin-edit" onclick="editStaticArticle('11settembre')">✏️ Modifica Testo</button>
+                    </div>
+                </article>
+
+                <!-- ALBERT EINSTEIN -->
+                <article class="wiki-article" id="einstein">
+                    <h2>Albert Einstein</h2>
+                    <div class="infobox">
+                        <div class="infobox-title">Albert Einstein</div>
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/d/d3/Albert_Einstein_Head.jpg/400px-Albert_Einstein_Head.jpg" alt="Einstein">
+                        <table>
+                            <tr><th>Nascita:</th><td>14 marzo 1879, Ulma</td></tr>
+                            <tr><th>Morte:</th><td>18 aprile 1955, Princeton</td></tr>
+                            <tr><th>Premio:</th><td>Nobel per la Fisica 1921</td></tr>
+                        </table>
+                    </div>
+
+                    <h3 class="section-title">L'Annus Mirabilis ed il Premio Nobel</h3>
+                    <p>Albert Einstein nacque a Ulma nel 1879. Nel 1905, mentre lavorava all'Ufficio Brevetti di Berna, pubblicò quattro articoli scientifici rivoluzionari dedicati all'effetto fotoelettrico, al moto browniano, alla relatività ristretta ed alla celeberrima equazione d'equivalenza massa-energia $E=mc^2$. Nel 1915 completò la Teoria della Relatività Generale e nel 1921 ricevette il Premio Nobel per la Fisica.</p>
+
+                    <h3 class="section-title">L'Esilio in America</h3>
+                    <p>Con l'avvento del nazismo nel 1933, Einstein rinunciò alla cittadinanza tedesca ed emigrò negli Stati Uniti lavorando al Princeton Institute for Advanced Study fino alla morte, avvenuta il 18 aprile 1955.</p>
+
+                    <div class="admin-controls">
+                        <strong>⚙️ Opzioni Amministratore:</strong><br>
+                        <button class="btn-admin-edit" onclick="editStaticArticle('einstein')">✏️ Modifica Testo</button>
+                    </div>
+                </article>
+
+                <!-- DANTE ALIGHIERI -->
+                <article class="wiki-article" id="dante">
+                    <h2>Dante Alighieri</h2>
+                    <div class="infobox">
+                        <div class="infobox-title">Dante Alighieri</div>
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/6f/Dante_Domenico_di_Michelino_Duomo_Florence.jpg/400px-Dante_Domenico_di_Michelino_Duomo_Florence.jpg" alt="Dante">
+                        <table>
+                            <tr><th>Nascita:</th><td>1265, Firenze</td></tr>
+                            <tr><th>Morte:</th><td>14 settembre 1321, Ravenna</td></tr>
+                            <tr><th>Opera:</th><td>Divina Commedia</td></tr>
+                        </table>
+                    </div>
+
+                    <h3 class="section-title">Vita, Esilio e Divina Commedia</h3>
+                    <p>Nato a Firenze nel 1265, Dante partecipò alla vita politica fiorentina ricoprendo la carica di Priore nel 1300. A seguito della vittoria dei Guelfi Neri, fu condannato all'esilio perpetuo nel 1302. Durante il suo peregrinare tra le corti dell'Italia del Nord scrisse il suo capolavoro, la *Divina Commedia* (Inferno, Purgatorio, Paradiso), consacrandosi come il padre della lingua e della letteratura italiana. Morì a Ravenna nel 1321.</p>
+
+                    <div class="admin-controls">
+                        <strong>⚙️ Opzioni Amministratore:</strong><br>
+                        <button class="btn-admin-edit" onclick="editStaticArticle('dante')">✏️ Modifica Testo</button>
+                    </div>
+                </article>
+
+                <!-- MARIE CURIE -->
+                <article class="wiki-article" id="marie-curie">
+                    <h2>Marie Curie</h2>
+                    <div class="infobox">
+                        <div class="infobox-title">Marie Curie</div>
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/7e/Marie_Curie_c1920.jpg/400px-Marie_Curie_c1920.jpg" alt="Curie">
+                        <table>
+                            <tr><th>Nascita:</th><td>7 novembre 1867, Varsavia</td></tr>
+                            <tr><th>Morte:</th><td>4 luglio 1934, Passy</td></tr>
+                            <tr><th>Premi:</th><td>2 Premi Nobel (Fisica 1903 e Chimica 1911)</td></tr>
+                        </table>
+                    </div>
+
+                    <h3 class="section-title">Radioattività e i Due Nobel</h3>
+                    <p>Maria Skłodowska nacque a Varsavia ed emigrò a Parigi per studiare alla Sorbona. Insieme al marito Pierre Curie isolò nel 1898 gli elementi radioattivi radio e polonio. Fu la prima donna a vincere un Premio Nobel e l'unica persona nella storia a vincere due Premi Nobel in due scienze differenti (Fisica nel 1903 e Chimica nel 1911). Morì nel 1934 a causa delle radiazioni assorbite nei laboratori.</p>
+
+                    <div class="admin-controls">
+                        <strong>⚙️ Opzioni Amministratore:</strong><br>
+                        <button class="btn-admin-edit" onclick="editStaticArticle('marie-curie')">✏️ Modifica Testo</button>
+                    </div>
+                </article>
+
+                <!-- ALESSANDRO MAGNO -->
+                <article class="wiki-article" id="alexander-great">
+                    <h2>Alessandro Magno</h2>
+                    <div class="infobox">
+                        <div class="infobox-title">Alessandro III</div>
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/e1/AlexanderTheGreatBust.jpg/400px-AlexanderTheGreatBust.jpg" alt="Alessandro">
+                        <table>
+                            <tr><th>Nascita:</th><td>356 a.C., Pella</td></tr>
+                            <tr><th>Morte:</th><td>323 a.C., Babilonia</td></tr>
+                            <tr><th>Titolo:</th><td>Re di Macedonia ed Egitto, Signore d'Asia</td></tr>
+                        </table>
+                    </div>
+
+                    <h3 class="section-title">Le Conquiste dell'Asia</h3>
+                    <p>Allievo privato del filosofo Aristotele, divenne re di Macedonia a vent'anni nel 336 a.C. Sottomise l'Impero Persiano di Dario III vinta la battaglia di Gaugamela, conquistò l'Egitto fondando Alessandria e condusse le sue truppe fino all'Indo, favorendo la fusione della cultura greca con quella orientale (ellenismo) prima della sua morte a Babilonia a 32 anni.</p>
+
+                    <div class="admin-controls">
+                        <strong>⚙️ Opzioni Amministratore:</strong><br>
+                        <button class="btn-admin-edit" onclick="editStaticArticle('alexander-great')">✏️ Modifica Testo</button>
+                    </div>
+                </article>
+
+                <!-- LEONARDO DA VINCI -->
+                <article class="wiki-article" id="da-vinci">
+                    <h2>Leonardo da Vinci</h2>
+                    <div class="infobox">
+                        <div class="infobox-title">Leonardo da Vinci</div>
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/ba/Leonardo_self_portrait.jpg/400px-Leonardo_self_portrait.jpg" alt="Leonardo">
+                        <table>
+                            <tr><th>Nascita:</th><td>15 aprile 1452, Anchiano</td></tr>
+                            <tr><th>Morte:</th><td>2 maggio 1519, Amboise</td></tr>
+                            <tr><th>Opere:</th><td>La Gioconda, L'Ultima Cena</td></tr>
+                        </table>
+                    </div>
+
+                    <h3 class="section-title">L'Uomo Universale del Rinascimento</h3>
+                    <p>Nato a Vinci nel 1452, si formò a Firenze nella bottega di Verrocchio. Pittore straordinario (*Mona Lisa*, *L'Ultima Cena*), fu anche scienziato, ingegnere, anatomista e scenografo al servizio dei Medici, degli Sforza a Milano e del re di Francia Francesco I, incarnando l'ideale dell'uomo universale rinascimentale.</p>
+
+                    <div class="admin-controls">
+                        <strong>⚙️ Opzioni Amministratore:</strong><br>
+                        <button class="btn-admin-edit" onclick="editStaticArticle('da-vinci')">✏️ Modifica Testo</button>
+                    </div>
+                </article>
+
+                <!-- CLEOPATRA VII -->
+                <article class="wiki-article" id="cleopatra">
+                    <h2>Cleopatra VII</h2>
+                    <div class="infobox">
+                        <div class="infobox-title">Cleopatra VII</div>
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/3e/Cleopatra_bust_in_Altes_Museum_Berlin.jpg/400px-Cleopatra_bust_in_Altes_Museum_Berlin.jpg" alt="Cleopatra">
+                        <table>
+                            <tr><th>Nascita:</th><td>69 a.C., Alessandria</td></tr>
+                            <tr><th>Morte:</th><td>30 a.C., Alessandria</td></tr>
+                            <tr><th>Ruolo:</th><td>Regina d'Egitto Tolemaica</td></tr>
+                        </table>
+                    </div>
+
+                    <h3 class="section-title">Regno ed Alleanze Romane</h3>
+                    <p>Ultima sovrana della dinastia tolemaica in Egitto, mantenne l'indipendenza del suo regno grazie alle alleanze con Giulio Cesare e successivamente con il triumviro Marco Antonio. Sconfitta dalla flotta di Ottaviano nella battaglia di Azio (31 a.C.), si suicidò ad Alessandria nel 30 a.C. per non sfilare da prigioniera a Roma.</p>
+
+                    <div class="admin-controls">
+                        <strong>⚙️ Opzioni Amministratore:</strong><br>
+                        <button class="btn-admin-edit" onclick="editStaticArticle('cleopatra')">✏️ Modifica Testo</button>
+                    </div>
+                </article>
+
+                <!-- NIKOLA TESLA -->
+                <article class="wiki-article" id="tesla">
+                    <h2>Nikola Tesla</h2>
+                    <div class="infobox">
+                        <div class="infobox-title">Nikola Tesla</div>
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/79/Tesla_circa_1890.jpeg/400px-Tesla_circa_1890.jpeg" alt="Tesla">
+                        <table>
+                            <tr><th>Nascita:</th><td>10 luglio 1856, Smiljan</td></tr>
+                            <tr><th>Morte:</th><td>7 gennaio 1943, New York</td></tr>
+                            <tr><th>Campo:</th><td>Elettrotecnica e Fisica</td></tr>
+                        </table>
+                    </div>
+
+                    <h3 class="section-title">La Corrente Alternata ed i Brevetti</h3>
+                    <p>Ingegnere ed inventore serbo emigrato a New York nel 1884, sviluppò i brevetti per il motore a campo magnetico rotante ed il sistema di distribuzione della corrente alternata (AC), imponendosi su Thomas Edison nella "guerra delle correnti". Depositò centinaia di brevetti fondamentali per la trasmissione radio ed i tubi ad alta frequenza.</p>
+
+                    <div class="admin-controls">
+                        <strong>⚙️ Opzioni Amministratore:</strong><br>
+                        <button class="btn-admin-edit" onclick="editStaticArticle('tesla')">✏️ Modifica Testo</button>
+                    </div>
+                </article>
+
+                <!-- ROSA PARKS -->
+                <article class="wiki-article" id="rosa-parks">
+                    <h2>Rosa Parks</h2>
+                    <div class="infobox">
+                        <div class="infobox-title">Rosa Parks</div>
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c4/Rosaparks.jpg/400px-RosaParks" alt="Parks">
+                        <table>
+                            <tr><th>Nascita:</th><td>4 febbraio 1913, Tuskegee</td></tr>
+                            <tr><th>Morte:</th><td>24 ottobre 2005, Detroit</td></tr>
+                            <tr><th>Ruolo:</th><td>Attivista per i Diritti Civili</td></tr>
+                        </table>
+                    </div>
+
+                    <h3 class="section-title">Il Gesto di Montgomery</h3>
+                    <p>Sarta ed attivista afroamericana della NAACP, il 1º dicembre 1955 a Montgomery (Alabama) rifiutò di cedere il proprio posto a sedere sul bus ad un passeggero bianco. Il suo arresto diede il via al celebre boicottaggio degli autobus guidato da Martin Luther King Jr., che portò alla dichiarazione d'incostituzionalità della segregazione razziale sui trasporti negli USA.</p>
+
+                    <div class="admin-controls">
+                        <strong>⚙️ Opzioni Amministratore:</strong><br>
+                        <button class="btn-admin-edit" onclick="editStaticArticle('rosa-parks')">✏️ Modifica Testo</button>
+                    </div>
+                </article>
+
+                <!-- MARTIN LUTHER KING JR. -->
+                <article class="wiki-article" id="martin-luther-king">
+                    <h2>Martin Luther King Jr.</h2>
+                    <div class="infobox">
+                        <div class="infobox-title">Martin Luther King Jr.</div>
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/05/Martin_Luther_King%2C_Jr._NYWTS_6.jpg/400px-Martin_Luther_King%2C_Jr._NYWTS_6.jpg" alt="MLK">
+                        <table>
+                            <tr><th>Nascita:</th><td>15 gennaio 1929, Atlanta</td></tr>
+                            <tr><th>Morte:</th><td>4 aprile 1968, Memphis</td></tr>
+                            <tr><th>Premio:</th><td>Nobel per la Pace 1964</td></tr>
+                        </table>
+                    </div>
+
+                    <h3 class="section-title">La Lotta Nonviolenta ed il Discorso I Have a Dream</h3>
+                    <p>Pastore battista e leader del movimento per i diritti civili degli afroamericani negli Stati Uniti, applicò i principi della resistenza pacifica e della nonviolenza. Il 28 agosto 1963 pronunciò a Washington il discorso <em>I Have a Dream</em> davanti a 250.000 persone. Premio Nobel per la Pace nel 1964, venne assassinato a Memphis il 4 aprile 1968.</p>
+
+                    <div class="admin-controls">
+                        <strong>⚙️ Opzioni Amministratore:</strong><br>
+                        <button class="btn-admin-edit" onclick="editStaticArticle('martin-luther-king')">✏️ Modifica Testo</button>
+                    </div>
+                </article>
+
+                <!-- MICHAEL JACKSON -->
+                <article class="wiki-article" id="jackson">
+                    <h2>Michael Jackson</h2>
+                    <div class="infobox">
+                        <div class="infobox-title">Michael Jackson</div>
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/31/Michael_Jackson_in_1988.jpg/400px-Michael_Jackson_in_1988.jpg" alt="Michael Jackson">
+                        <table>
+                            <tr><th>Nascita:</th><td>29 agosto 1958, Gary</td></tr>
+                            <tr><th>Morte:</th><td>25 giugno 2009, Los Angeles</td></tr>
+                            <tr><th>Ruolo:</th><td>Re del Pop</td></tr>
+                        </table>
+                    </div>
+
+                    <h3 class="section-title">Thriller e la Storia della Musica Pop</h3>
+                    <p>Esordì da bambino nei Jackson 5 prima di intraprendere la carriera da solista. Nel 1982 pubblicò l'album <em>Thriller</em>, rimasto il disco più venduto della storia della musica con oltre 100 milioni di copie. Ha rivoluzionato la danza moderna introducendo il <em>Moonwalk</em> e trasformando i videoclip musicali in cortometraggi d'autore.</p>
+
+                    <div class="admin-controls">
+                        <strong>⚙️ Opzioni Amministratore:</strong><br>
+                        <button class="btn-admin-edit" onclick="editStaticArticle('jackson')">✏️ Modifica Testo</button>
+                    </div>
+                </article>
+
+            </div>
+        </main>
+    </div>
+
+    <script>
+        let isAdmin = false;
+        const SECRET_CODE = "HTTP 111";
+
+        const quizQuestions = [
+            {
+                q: "Quale organo dell'occhio è responsabile della visione dei colori grazie ai 'coni'?",
+                options: ["L'orecchio interno", "La retina", "Il cristallino", "La cornea"],
+                correct: 1
+            },
+            {
+                q: "Qual è il nome del trattato del 1797 con cui Napoleone cedette la Repubblica di Venezia all'Austria?",
+                options: ["Trattato di Campoformio", "Accordi di Plombières", "Congresso di Vienna", "Pace di Utrecht"],
+                correct: 0
+            },
+            {
+                q: "Chi ha dipinto 'Il Bacio' (1859), capolavoro del Romanticismo storico italiano?",
+                options: ["Jacques-Louis David", "Francesco Hayez", "Caspar David Friedrich", "Leonardo da Vinci"],
+                correct: 1
+            },
+            {
+                q: "In quale anno si è svolta la celebre Spedizione dei Mille guidata da Giuseppe Garibaldi?",
+                options: ["1848", "1860", "1870", "1915"],
+                correct: 1
+            },
+            {
+                q: "Quale parte del neurone conduce il potenziale d'azione lontano dal corpo cellulare?",
+                options: ["Il dendrite", "Il nucleo", "L'assone", "La sinapsi"],
+                correct: 2
+            },
+            {
+                q: "Chi scrisse il famoso romanzo epistolare 'Le ultime lettere di Jacopo Ortis'?",
+                options: ["Alessandro Manzoni", "Dante Alighieri", "Ugo Foscolo", "Giacomo Leopardi"],
+                correct: 2
+            },
+            {
+                q: "Qual è il valore della superficie totale $S_t$ di un cubo con lato 'l'?",
+                options: ["$S_t = 4 \\cdot l^2$", "$S_t = 6 \\cdot l^2$", "$S_t = l^3$", "$S_t = 2 \\cdot l$"],
+                correct: 1
+            }
+        ];
+
+        let currentQuizIndex = 0;
+
+        document.addEventListener('DOMContentLoaded', loadServerCharacters);
+
+        function handleSearchKey(event) {
+            if (event.key === "Enter") triggerSearch();
+        }
+
+        function triggerSearch() {
+            let inputVal = document.getElementById('searchInput').value.trim();
+            if (inputVal === SECRET_CODE) {
+                isAdmin = true;
+                document.body.classList.add('admin-active');
+                document.getElementById('adminBanner').style.display = "block";
+                document.getElementById('searchInput').value = "";
+                alert("🔓 ACCESSO AMMINISTRATORE CONFERMATO!");
+                loadServerCharacters();
+            } else {
+                searchWiki();
+            }
+        }
+
+        function searchWiki() {
+            let input = document.getElementById('searchInput').value.toLowerCase().trim();
+            if (input === SECRET_CODE.toLowerCase()) return;
+
+            let articles = document.getElementsByClassName('wiki-article');
+            for (let i = 0; i < articles.length; i++) {
+                let text = articles[i].innerText.toLowerCase();
+                articles[i].style.display = text.includes(input) ? "" : "none";
+            }
+        }
+
+        function toggleQuizMode() {
+            document.body.classList.toggle('quiz-active');
+            const btn = document.getElementById('btnQuizMode');
+            btn.classList.toggle('active');
+            if (document.body.classList.contains('quiz-active')) loadQuizQuestion();
+        }
+
+        function loadQuizQuestion() {
+            const qObj = quizQuestions[currentQuizIndex];
+            document.getElementById('quizQuestion').innerText = `Domanda ${currentQuizIndex + 1} di ${quizQuestions.length}: ${qObj.q}`;
+            const optContainer = document.getElementById('quizOptions');
+            optContainer.innerHTML = '';
+            document.getElementById('quizFeedback').innerText = '';
+
+            qObj.options.forEach((opt, idx) => {
+                const btn = document.createElement('button');
+                btn.className = 'quiz-btn';
+                btn.innerText = opt;
+                btn.onclick = () => checkAnswer(idx, qObj.correct);
+                optContainer.appendChild(btn);
+            });
+        }
+
+        function checkAnswer(selected, correct) {
+            const feedback = document.getElementById('quizFeedback');
+            if (selected === correct) {
+                feedback.style.color = "green";
+                feedback.innerText = "✅ Risposta Esatta!";
+            } else {
+                feedback.style.color = "red";
+                feedback.innerText = "❌ Risposta Errata. Quella corretta era: " + quizQuestions[currentQuizIndex].options[correct];
+            }
+        }
+
+        function nextQuizQuestion() {
+            currentQuizIndex = (currentQuizIndex + 1) % quizQuestions.length;
+            loadQuizQuestion();
+        }
+
+        function togglePresentationMode() {
+            document.body.classList.toggle('presentation-mode');
+            const btn = document.getElementById('btnPresMode');
+            btn.classList.toggle('active');
+            btn.innerText = document.body.classList.contains('presentation-mode') ? "📖 STANDARD MODE" : "📊 PRESENTAZIONI MODE";
+        }
+
+        function loadServerCharacters() {
+            fetch('/api/characters')
+                .then(res => res.json())
+                .then(data => {
+                    const container = document.getElementById('serverArticlesContainer');
+                    const sidebar = document.getElementById('userCreatedSidebar');
+                    container.innerHTML = '';
+                    sidebar.innerHTML = '';
+                    data.forEach(item => renderCharacter(item, container, sidebar));
+                })
+                .catch(err => console.log("Errore server:", err));
+        }
+
+        function renderCharacter(item, container, sidebar) {
+            const article = document.createElement('article');
+            article.className = 'wiki-article';
+            article.id = item.id;
+            const kwArray = item.keywords ? item.keywords.split(',') : ['Storico'];
+            const kwHtml = kwArray.map(k => `<span class="keywords-tag">${k.trim()}</span>`).join('');
+            const imgHtml = item.imgUrl ? `<img src="${item.imgUrl}" alt="${item.nome}">` : '';
+
+            article.innerHTML = `
+                <h2>${item.nome}</h2>
+                <div class="infobox">
+                    <div class="infobox-title">${item.nome}</div>
+                    ${imgHtml}
+                    <table>
+                        <tr><th>Inizio:</th><td>${item.nascita || 'N/D'}</td></tr>
+                        <tr><th>Fine:</th><td>${item.morte || 'N/D'}</td></tr>
+                        <tr><th>Ruolo:</th><td>${item.ruolo || 'N/D'}</td></tr>
+                    </table>
+                </div>
+
+                <div class="presentation-card">
+                    <h4>📊 SCHEDA PRESENTAZIONE: ${item.nome}</h4>
+                    <div>${kwHtml}</div>
+                    <p style="margin-top:8px; font-size:13px;"><strong>Punti Essenziali:</strong> ${item.biografia.substring(0, 200)}...</p>
+                </div>
+
+                <h3 class="section-title">Trattazione Dettagliata</h3>
+                <p>${item.biografia}</p>
+
+                <div class="admin-controls">
+                    <strong>⚙️ Opzioni Amministratore (Server):</strong><br>
+                    <button class="btn-admin-edit" onclick="editServerArticle('${item.id}')">✏️ Modifica</button>
+                    <button class="btn-admin-del" onclick="deleteCharacter('${item.id}')">❌ Elimina dal Server</button>
+                </div>
+            `;
+            container.appendChild(article);
+            const li = document.createElement('li');
+            li.innerHTML = `<a href="#${item.id}">${item.nome}</a>`;
+            sidebar.appendChild(li);
+        }
+
+        function saveCharacterToServer(event) {
+            event.preventDefault();
+            const nome = document.getElementById('nome').value;
+            const imgUrl = document.getElementById('imgUrl').value;
+            const nascita = document.getElementById('nascita').value;
+            const morte = document.getElementById('morte').value;
+            const ruolo = document.getElementById('ruolo').value;
+            const keywords = document.getElementById('keywords').value;
+            const biografia = document.getElementById('biografia').value;
+            const id = nome.toLowerCase().replace(/[^a-z0-9]/g, '-');
+
+            fetch('/api/characters', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ id, nome, imgUrl, nascita, morte, ruolo, keywords, biografia })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if(data.success) {
+                    alert('Voce aggiunta con successo su Storyweb!');
+                    loadServerCharacters();
+                    document.getElementById('addPersonForm').reset();
+                }
+            });
+        }
+
+        function deleteCharacter(id) {
+            if(!isAdmin) return;
+            if(confirm('Eliminare definitivamente dal server?')) {
+                fetch(`/api/characters/${id}`, { method: 'DELETE' })
+                    .then(res => res.json())
+                    .then(data => {
+                        if(data.success) loadServerCharacters();
+                    });
+            }
+        }
+
+        function editServerArticle(id) {
+            if(!isAdmin) return;
+            let newText = prompt("Nuova descrizione:");
+            if(newText) {
+                fetch(`/api/characters/${id}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ biografia: newText })
+                })
+                .then(res => res.json())
+                .then(data => {
+                    if(data.success) loadServerCharacters();
+                });
+            }
+        }
+
+        function editStaticArticle(artId) {
+            if(!isAdmin) return;
+            let art = document.getElementById(artId);
+            let p = art.querySelector('p');
+            let newText = prompt("Modifica la biografia:", p.innerText);
+            if(newText) p.innerText = newText;
+        }
+    </script>
+</body>
+</html>
